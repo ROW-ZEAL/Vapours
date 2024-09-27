@@ -1,0 +1,35 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# Dependencies
+node_modules/          # Ignore the node_modules directory
+
+# Expo
+.expo/                 # Ignore Expo-related files
+dist/                  # Ignore distribution files
+web-build/             # Ignore web build files
+
+# Native builds
+*.orig.*               # Ignore original backup files
+*.jks                  # Ignore Java Keystore files
+*.p8                   # Ignore Apple Push Notification service key files
+*.p12                  # Ignore .p12 files for certificates
+*.key                  # Ignore private keys
+*.mobileprovision      # Ignore provisioning profiles
+
+# Metro
+.metro-health-check*   # Ignore Metro health check files
+
+# Debugging files
+npm-debug.*            # Ignore npm debug logs
+yarn-debug.*           # Ignore Yarn debug logs
+yarn-error.*           # Ignore Yarn error logs
+
+# macOS
+.DS_Store              # Ignore macOS metadata files
+*.pem                  # Ignore PEM files (usually for certificates)
+
+# Local environment files
+.env*.local            # Ignore local environment files
+
+# TypeScript
+*.tsbuildinfo          # Ignore TypeScript build information files
