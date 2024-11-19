@@ -70,9 +70,36 @@ const CategoryPage = () => {
         <Text style={styles.price}>Price: ₹{item.price}/hour</Text>
         {renderStars()}
         <View style={styles.exploreButton}>
+          {/* <Button
+            title="Explore"
+            onPress={() =>
+              navigation.navigate("Explore", {
+                futsal: {
+                  name: item.venue_name,
+                  image: item.photo_url,
+                  address: item.address,
+                  price: item.price,
+                },
+              })
+            }
+          /> */}
           <Button
             title="Explore"
-            onPress={() => navigation.navigate("Explore")}
+            onPress={() =>
+              navigation.navigate("Explore", {
+                futsal: {
+                  name: item.venue_name,
+                  image: item.photo_url,
+                  address: item.address,
+                  price: item.price,
+                  contact: item.ph_no || "Not Available",
+                  contactPerson: item.name || "Not Available",
+                  availability: "Open 7 days a week",
+                  hours: "6:00AM - 10:00PM",
+                  maps: "https://www.google.com/maps",
+                },
+              })
+            }
           />
         </View>
       </View>

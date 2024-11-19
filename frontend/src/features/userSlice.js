@@ -10,10 +10,12 @@ export const userSlice = createSlice({
     setUserInfo: (state, action) => {
       state.email = action.payload.email;
       state.name = action.payload.name;
+      state.phone_number = action.payload.phone_number;
     },
     unSetUserInfo: (state, action) => {
       state.email = action.payload.email;
       state.name = action.payload.name;
+      state.phone_number = action.payload.phone_number;
     },
   },
 });

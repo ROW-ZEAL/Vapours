@@ -50,7 +50,13 @@ const Accounts = (props) => {
   const { data, isSuccess } = useGetLoggedUserQuery(token.access);
   useEffect(() => {
     if (isSuccess) {
-      dispatch(setUserInfo({ email: data.email, name: data.name }));
+      dispatch(
+        setUserInfo({
+          email: data.email,
+          name: data.name,
+          phone_number: data.phone_number,
+        })
+      );
     }
   });
 
@@ -80,6 +86,7 @@ const Accounts = (props) => {
       <View style={styles.userInfo}>
         <Text style={styles.userName}>{myData.name}</Text>
         <Text style={styles.userEmail}>{myData.email}</Text>
+        <Text style={styles.userEmail}>{myData.phone_number}</Text>
         {/* <Text style={{ fontSize: 16, marginBottom: 5 }}>
           {myAccessToken.access_token}
         </Text> */}
