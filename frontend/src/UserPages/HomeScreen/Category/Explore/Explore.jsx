@@ -6,31 +6,37 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  Modal,
 } from "react-native";
-import { useRoute, useNavigation } from "@react-navigation/native"; // Import useNavigation for navigation
+import { useRoute, useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Linking } from "react-native";
-import { useSelector } from "react-redux"; // Import useSelector
-import styles from "./ExploreStyles"; // Importing styles from ExploreStyles.js
+import { useSelector } from "react-redux";
+import styles from "./ExploreStyles";
 
 const Explore = () => {
   const route = useRoute();
-  const navigation = useNavigation(); // Hook for navigation
-  const { futsal } = route.params || {}; // Ensure futsal object is available
+  const navigation = useNavigation();
+  const { futsal } = route.params || {};
 
   if (!futsal) {
-    return <Text>Loading...</Text>; // or show an error message
+    return <Text>Loading...</Text>;
   }
 
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [selectedSlotIndex, setSelectedSlotIndex] = useState(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
-  const user = useSelector((state) => state.user); // Access user info from Redux store
+  const user = useSelector((state) => state.user);
 
   const onChange = (event, selectedDate) => {
     if (event.type === "set") {
+      if (selectedDate < new Date()) {
+        Alert.alert("Invalid Date", "You cannot select a past date.");
+        return;
+      }
       setDate(selectedDate || date);
     }
     setShow(false);
@@ -58,24 +64,28 @@ const Explore = () => {
   };
 
   const openMap = () => {
-    const mapUrl = "https://www.google.com/maps"; // Static Google Maps URL
+    const mapUrl = "https://www.google.com/maps";
     Linking.openURL(mapUrl).catch((err) => {
       Alert.alert("Error", "Unable to open Google Maps.");
     });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (selectedSlotIndex === null) {
       Alert.alert("Error", "Please select a slot before submitting.");
       return;
     }
+    setShowPaymentModal(true);
+  };
 
+  const handlePayNow = () => {
+    setShowPaymentModal(false);
     const selectedSlot = slots[selectedSlotIndex];
 
     const bookingData = {
       futsal_name: futsal.name,
       selected_slot: selectedSlot.time,
-      booking_date: date.toISOString().split("T")[0], // Format to YYYY-MM-DD
+      booking_date: date.toISOString().split("T")[0],
       contact_person: futsal.contactPerson,
       contact_number: futsal.contact,
       address: futsal.address,
@@ -84,42 +94,33 @@ const Explore = () => {
       user_phone_number: user.phone_number,
     };
 
-    // Booking details message
-    const bookingMessage = `
-      Futsal Name: ${futsal.name}
-      Slot: ${selectedSlot.time}
-      Date: ${date.toLocaleDateString()}
-      Contact: ${futsal.contactPerson} (${futsal.contact})
-      Address: ${futsal.address}
-    `;
+    console.log("Booking Data:", bookingData);
 
-    // Show confirmation alert with booking details
-    Alert.alert(
-      "Confirm Your Booking",
-      `These are your booking details:\n\n${bookingMessage}\n\nDo you want to proceed to payment?`,
-      [
-        {
-          text: "Yes",
-          onPress: () => {
-            // Navigate to payment page
-            navigation.navigate("Payment", { bookingData });
-          },
-        },
-        {
-          text: "No",
-          onPress: () => {
-            // Stay on the current page (do nothing)
-          },
-        },
-      ]
-    );
+    navigation.navigate("Paynow", { bookingData });
+  };
+
+  const handlePayOnArrival = () => {
+    setShowPaymentModal(false);
+    const selectedSlot = slots[selectedSlotIndex];
+
+    const bookingData = {
+      futsal_name: futsal.name,
+      selected_slot: selectedSlot.time,
+      booking_date: date.toISOString().split("T")[0],
+      contact_person: futsal.contactPerson,
+      contact_number: futsal.contact,
+      address: futsal.address,
+      user_name: user.name,
+      user_email: user.email,
+      user_phone_number: user.phone_number,
+    };
+    navigation.navigate("Payonarrival", { bookingData });
   };
 
   return (
     <ScrollView>
       <View style={styles.container}>
         <Image source={{ uri: futsal.image }} style={styles.image} />
-
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{futsal.name}</Text>
           <View style={styles.ratingContainer}>
@@ -145,7 +146,6 @@ const Explore = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Contact Section */}
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>Contact:</Text>
             <View style={styles.row}>
@@ -158,7 +158,6 @@ const Explore = () => {
             </View>
           </View>
 
-          {/* Pick a Date Section */}
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>Pick a Date For Booking:</Text>
             <TouchableOpacity onPress={showDatepicker}>
@@ -180,11 +179,11 @@ const Explore = () => {
                 mode="date"
                 display="default"
                 onChange={onChange}
+                minimumDate={new Date()}
               />
             )}
           </View>
 
-          {/* Available Slots Section */}
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>Available slots</Text>
             <View style={styles.slotsContainer}>
@@ -210,12 +209,65 @@ const Explore = () => {
             </View>
           </View>
 
-          {/* Submit Button */}
           <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
             <Text style={styles.submitButtonText}>Submit</Text>
           </TouchableOpacity>
         </View>
       </View>
+
+      <Modal
+        visible={showPaymentModal}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setShowPaymentModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalBox}>
+            <Text style={styles.modalTitle}>{futsal.name}</Text>
+            <View style={styles.modalDetails}>
+              <Text style={styles.modalDetail}>
+                <Text style={styles.boldText}>Date: </Text>
+                {date.toLocaleDateString()}
+              </Text>
+              <Text style={styles.modalDetail}>
+                <Text style={styles.boldText}>Slot: </Text>
+                {slots[selectedSlotIndex]?.time}
+              </Text>
+              <Text style={styles.modalDetail}>
+                <Text style={styles.boldText}>Address: </Text>
+                {futsal.address}
+              </Text>
+              <Text style={styles.modalDetail}>
+                <Text style={styles.boldText}>User Name: </Text>
+                {user.name}
+              </Text>
+              <Text style={styles.modalDetail}>
+                <Text style={styles.boldText}>User Email: </Text>
+                {user.email}
+              </Text>
+              <Text style={styles.modalDetail}>
+                <Text style={styles.boldText}>User Phone: </Text>
+                {user.phone_number}
+              </Text>
+            </View>
+
+            <View style={styles.modalButtonContainer}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.payNowButton]}
+                onPress={handlePayNow}
+              >
+                <Text style={styles.modalButtonText}>Pay Now</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.payArrivalButton]}
+                onPress={handlePayOnArrival}
+              >
+                <Text style={styles.modalButtonText}>Pay on Arrival</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };

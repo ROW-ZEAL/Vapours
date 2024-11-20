@@ -13,6 +13,9 @@ import AccountScreen from "../../UserPages/AccountScreen/AccountScreen";
 import ChangePasswordScreen from "../../../src/screens/auth/ChangePasswordScreen ";
 import CategoryPage from "../../UserPages/HomeScreen/Category/CategoryPage";
 import Explore from "../../UserPages/HomeScreen/Category/Explore/Explore";
+import PayNow from "../../UserPages/HomeScreen/Category/Payment/Paynow/PayNow";
+import PayOnarrival from "../../UserPages/HomeScreen/Category/Payment/PayOnarrival";
+import Sucessful from "../../UserPages/HomeScreen/Category/Payment/Paynow/Sucessful";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -35,6 +38,9 @@ function HomeStackNavigator() {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="Explore" component={Explore} />
+      <Stack.Screen name="Paynow" component={PayNow} />
+      <Stack.Screen name="Payonarrival" component={PayOnarrival} />
+      <Stack.Screen name="Sucessful" component={Sucessful} />
     </Stack.Navigator>
   );
 }
@@ -49,9 +55,9 @@ export default function Taskbar() {
 
           if (route.name === "Home") {
             iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Booking History") {
+          } else if (route.name === "BookingHistory") {
             iconName = focused ? "time" : "time-outline";
-          } else if (route.name === "Games Nearby") {
+          } else if (route.name === "GamesNearby") {
             iconName = focused ? "trophy" : "trophy-outline";
           } else if (route.name === "Notifications") {
             iconName = focused ? "notifications" : "notifications-outline";
@@ -70,8 +76,8 @@ export default function Taskbar() {
         component={HomeStackNavigator}
         options={{ headerShown: false }}
       />
-      <Tab.Screen name="Booking History" component={HistoryScreen} />
-      <Tab.Screen name="Games Nearby" component={GamesNearbyScreen} />
+      <Tab.Screen name="BookingHistory" component={HistoryScreen} />
+      <Tab.Screen name="GamesNearby" component={GamesNearbyScreen} />
       <Tab.Screen name="Notifications" component={NotificationsScreen} />
       <Tab.Screen name="Account">
         {(props) => <AccountScreen {...props} />}

@@ -112,6 +112,75 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Dimmed background
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  // Modal Box: Centered box with rounded corners
+  modalBox: {
+    width: "90%", // Adjust width as needed
+    backgroundColor: "#fff", // Solid white background
+    borderRadius: 15,
+    padding: 20,
+    elevation: 5, // Shadow for Android
+    shadowColor: "#000", // Shadow for iOS
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+  },
+
+  // Modal Title: Futsal Name
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333",
+    textAlign: "center",
+    marginBottom: 15,
+  },
+
+  // Booking Details Section
+  modalDetails: {
+    marginBottom: 20,
+  },
+  modalDetail: {
+    fontSize: 16,
+    color: "#555",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  boldText: {
+    fontWeight: "bold",
+    color: "#000",
+  },
+
+  // Button Container: Flex row for buttons
+  modalButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+
+  // Buttons: Common styling for buttons
+  modalButton: {
+    flex: 1,
+    borderRadius: 10,
+    paddingVertical: 10,
+    alignItems: "center",
+    marginHorizontal: 5,
+  },
+  payNowButton: {
+    backgroundColor: "#4CAF50", // Green for Pay Now
+  },
+  payArrivalButton: {
+    backgroundColor: "#FF9800", // Orange for Pay on Arrival
+  },
+  modalButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
+  },
 });
 
 export default styles;
