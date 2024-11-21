@@ -7,6 +7,8 @@ import Taskbar from "./src/screens/taskbar/Taskbar";
 import AdminTaskbar from "./src/AdminPages/AdminTaskbar";
 import AdminRegister from "./src/AdminPages/AdminRegister";
 import AdminLogin from "./src/AdminPages/AdminLogin";
+import SplashScreen from "./src/screens/auth/SplashScreen";
+import AccountTypeSelection from "./src/screens/auth/AccountTypeSelection";
 import { Provider } from "react-redux";
 import Store from "./src/Store";
 
@@ -17,6 +19,16 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator>
         {/* <Stack.Screen name="ShopTab" component={ShopTab} options={{ headerShown: false }} /> */}
+        <Stack.Screen
+          name="SplashScreen"
+          component={SplashScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="AccountTypeSelection"
+          component={AccountTypeSelection}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="UserLogin"
           component={UserLoginScreen}
@@ -33,6 +45,11 @@ function App() {
           component={SendPasswordResetEmailScreen}
           options={{ headerShown: false }}
         />
+        {/* <Stack.Screen
+          name="changePassword"
+          component={ChangePasswordScreen}
+          options={{ headerShown: false }}
+        /> */}
         <Stack.Screen
           name="Taskbar"
           component={Taskbar}

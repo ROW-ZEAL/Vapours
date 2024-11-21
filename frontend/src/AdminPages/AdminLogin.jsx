@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  Image,
 } from "react-native";
 import React, { useState } from "react";
 import { styles, toastConfig } from "../../style";
@@ -35,16 +36,13 @@ const UserLoginScreen = () => {
     if (res.data) {
       console.log("Response Data", res.data);
 
-      // Extracting data from response
       const { token, isAdmin } = res.data;
 
-      await storeToken(token); // Store Token in Storage
+      await storeToken(token);
 
       if (isAdmin) {
-        // Navigate to Admin Dashboard if the user is an admin
         navigation.navigate("AdminTaskbar");
       } else {
-        // Show a toast message if the user is not an admin
         Toast.show({
           type: "error",
           position: "top",
@@ -87,25 +85,18 @@ const UserLoginScreen = () => {
     >
       <Toast config={toastConfig} />
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Title with Icon */}
         <View style={{ alignItems: "center", marginBottom: 30 }}>
-          <MaterialIcon name="login" size={80} color="#1F41BB" />
-          <Text
-            style={{
-              fontSize: 32,
-              fontWeight: "bold",
-              color: "#1F41BB",
-              marginTop: 10,
-            }}
-          >
-            Admin Login
-          </Text>
-          <Text style={{ fontSize: 16, color: "#6c757d", marginTop: 5 }}>
-            Access your dashboard to plan your games!
-          </Text>
+          <View style={{ alignItems: "center", marginBottom: 30 }}>
+            <Image
+              source={require("../../assets/logo-design.png")}
+              style={styles.logo}
+            />
+            <Text style={{ fontSize: 16, color: "#6c757d", marginTop: 5 }}>
+              Access your dashboard to plan your games!
+            </Text>
+          </View>
         </View>
 
-        {/* Email Input */}
         <View style={styles.inputWithLabel}>
           <Text style={[styles.labelText, { color: "#495057" }]}>Email</Text>
           <View
@@ -135,7 +126,6 @@ const UserLoginScreen = () => {
           </View>
         </View>
 
-        {/* Password Input */}
         <View style={[styles.inputWithLabel, { marginTop: 20 }]}>
           <Text style={[styles.labelText, { color: "#495057" }]}>Password</Text>
           <View
@@ -165,7 +155,6 @@ const UserLoginScreen = () => {
           </View>
         </View>
 
-        {/* Login Button */}
         <TouchableOpacity
           style={{
             backgroundColor: "#1F41BB",
@@ -180,6 +169,15 @@ const UserLoginScreen = () => {
             Login
           </Text>
         </TouchableOpacity>
+        <View style={{ marginTop: 30, alignItems: "center" }}>
+          <TouchableWithoutFeedback
+            onPress={() => navigation.navigate("UserLogin")}
+          >
+            <Text style={{ color: "#495057", fontWeight: "bold" }}>
+              Are you an User? Login here
+            </Text>
+          </TouchableWithoutFeedback>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   TouchableWithoutFeedback,
+  Image,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -65,19 +66,11 @@ const UserLoginScreen = () => {
     >
       <Toast config={toastConfig} />
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Title with Icon */}
         <View style={{ alignItems: "center", marginBottom: 30 }}>
-          <MaterialIcon name="login" size={80} color="#1F41BB" />
-          <Text
-            style={{
-              fontSize: 32,
-              fontWeight: "bold",
-              color: "#1F41BB",
-              marginTop: 10,
-            }}
-          >
-            GamePlanR
-          </Text>
+          <Image
+            source={require("../../../assets/logo-design.png")}
+            style={styles.logo}
+          />
           <Text style={{ fontSize: 16, color: "#6c757d", marginTop: 5 }}>
             Access your dashboard to plan your games!
           </Text>
@@ -186,10 +179,10 @@ const UserLoginScreen = () => {
         {/* Admin Registration Link */}
         <View style={{ marginTop: 30, alignItems: "center" }}>
           <TouchableWithoutFeedback
-            onPress={() => navigation.navigate("AdminRegister")}
+            onPress={() => navigation.navigate("AdminLogin")}
           >
             <Text style={{ color: "#495057", fontWeight: "bold" }}>
-              Are you an Admin? Register here
+              Are you an Admin? Login here
             </Text>
           </TouchableWithoutFeedback>
         </View>

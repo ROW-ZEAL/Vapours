@@ -8,6 +8,11 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 16,
   },
+  logo: {
+    width: 120,
+    height: 120,
+    marginBottom: 40,
+  },
   input: {
     height: 40,
     borderWidth: 1,

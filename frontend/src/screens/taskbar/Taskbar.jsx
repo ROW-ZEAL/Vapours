@@ -16,6 +16,9 @@ import Explore from "../../UserPages/HomeScreen/Category/Explore/Explore";
 import PayNow from "../../UserPages/HomeScreen/Category/Payment/Paynow/PayNow";
 import PayOnarrival from "../../UserPages/HomeScreen/Category/Payment/PayOnarrival";
 import Sucessful from "../../UserPages/HomeScreen/Category/Payment/Paynow/Sucessful";
+import EditProfile from "../../UserPages/AccountScreen/EditProfile/EditProfile";
+import RequestDetails from "../../UserPages/HomeScreen/Category/Explore/FindOpponent/RequestDetails";
+import GameDetailsScreen from "../../UserPages/GamesNearbyScreen/GameDetailsScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -41,6 +44,9 @@ function HomeStackNavigator() {
       <Stack.Screen name="Paynow" component={PayNow} />
       <Stack.Screen name="Payonarrival" component={PayOnarrival} />
       <Stack.Screen name="Sucessful" component={Sucessful} />
+      <Stack.Screen name="EditProfile" component={EditProfile} />
+      <Stack.Screen name="RequestDetails" component={RequestDetails} />
+      <Stack.Screen name="GameDetails" component={GameDetailsScreen} />
     </Stack.Navigator>
   );
 }

@@ -27,7 +27,7 @@ export default function HistoryScreen() {
         }
 
         const data = await response.json();
-        setBookingHistory(data); // Assuming data is the booking history
+        setBookingHistory(data);
       } catch (err) {
         console.error("Fetch error:", err);
         setError("Failed to fetch data");
@@ -43,7 +43,7 @@ export default function HistoryScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.welcomeText}>Welcome, {user.name}!</Text>
+      <Text style={styles.welcomeText}>Loading!!!</Text>
 
       {loading && <ActivityIndicator size="large" color="#FF6347" />}
 

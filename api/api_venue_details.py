@@ -27,33 +27,44 @@ def api_venue_details(data):
             password="jayhind",
             port="5432"
         )
-        db_connection.autocommit = True
+
         cursor = db_connection.cursor()
-        
+
+        # Query to get the next available ID
+        cursor.execute("SELECT COALESCE(MAX(id) + 1, 1) AS next_id FROM venue")
+        next_id = cursor.fetchone()[0]
+
         # SQL insert query
         members_insert_query = """
             INSERT INTO venue (
-                venue_name,
+                id, venue_name,
                 category,
                 address,
                 price,
                 selected_facility,
                 selected_date
-            ) VALUES (%s, %s, %s, %s, %s, %s)
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
+        
+        # Execute the insert query with the data
         cursor.execute(members_insert_query, (
+            next_id,  # Use the next ID for the venue
             venue_name,
             category,
             location,
             price,
-            selected_facility,
+            json.dumps(selected_facility),  # Store selected_facility as JSON in the database
             selected_date
         ))
-        
+
+        # Commit the transaction
         db_connection.commit()
+
+        # Close the cursor and connection
         cursor.close()
         db_connection.close()
 
+        # Return a success response
         context = {
             'status': 'success',
         }
@@ -63,6 +74,6 @@ def api_venue_details(data):
         context = {
             'status': 'fail',
         }
-    
-    # Responding with a success message
+
+    # Return the response
     return {'message': 'Form data received successfully', 'context': context}

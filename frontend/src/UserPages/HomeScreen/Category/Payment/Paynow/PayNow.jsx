@@ -8,9 +8,8 @@ import {
   StyleSheet,
 } from "react-native";
 
-// Function to generate a dynamic transaction ID
 const generateTransactionId = () => {
-  return `TXN${Math.floor(Math.random() * 1000000)}`; // Random transaction ID, e.g., TXN123456
+  return `TXN${Math.floor(Math.random() * 1000000)}`;
 };
 
 const PayNow = ({ route, navigation }) => {
@@ -19,23 +18,20 @@ const PayNow = ({ route, navigation }) => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [khaltiPin, setKhaltiPin] = useState("");
 
-  // Simulate the Khalti payment process
   const handlePayment = () => {
     if (!mobileNumber || !khaltiPin) {
       Alert.alert("Error", "Please enter all the payment details.");
       return;
     }
 
-    // Simulate a payment success (80% chance)
     const isPaymentSuccessful = Math.random() > 0.2;
 
     if (isPaymentSuccessful) {
-      const transactionId = generateTransactionId(); // Generate dynamic transaction ID
-      const amount = 1000; // Simulated amount
-      const date = new Date().toLocaleDateString(); // Simulated date
-      const paymentMethod = "Khalti"; // Simulated payment method
+      const transactionId = generateTransactionId();
+      const amount = 1000;
+      const date = new Date().toLocaleDateString();
+      const paymentMethod = "Khalti";
 
-      // Pass the dynamic data to the success screen
       navigation.navigate("Sucessful", {
         transactionId,
         amount,
@@ -51,12 +47,10 @@ const PayNow = ({ route, navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Payment Details</Text>
 
-      {/* Booking Info */}
       <Text style={styles.bookingDetails}>Name: {bookingData.user_name}</Text>
       <Text style={styles.bookingDetails}>Email: {bookingData.user_email}</Text>
       <Text style={styles.bookingDetails}>Amount: Rs. 1000</Text>
 
-      {/* Mobile Number Input */}
       <TextInput
         style={styles.input}
         placeholder="Enter Mobile Number"
@@ -65,7 +59,6 @@ const PayNow = ({ route, navigation }) => {
         onChangeText={setMobileNumber}
       />
 
-      {/* Khalti PIN Input */}
       <TextInput
         style={styles.input}
         placeholder="Enter Khalti PIN"
@@ -74,7 +67,6 @@ const PayNow = ({ route, navigation }) => {
         onChangeText={setKhaltiPin}
       />
 
-      {/* Pay Now Button */}
       <TouchableOpacity style={styles.button} onPress={handlePayment}>
         <Text style={styles.buttonText}>Pay Now</Text>
       </TouchableOpacity>

@@ -3,9 +3,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AdminDashboard from "./pages/AdminDashboard";
-import AddVenue from "./pages/AddVenue";
-import Notifications from "./pages/Notifications";
-import Account from "./pages/Account";
+import AddVenue from "./pages/AddVenue/AddVenue";
+import Notifications from "./pages/Account/Notification/Notifications";
+import Account from "./pages/Account/Account";
+import EditProfile from "./pages/Account/EditProfile/EditProfile";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -17,8 +18,9 @@ function HomeStackNavigator() {
       <Stack.Screen
         name="AdminHomeScreen"
         component={AdminDashboard}
-        options={{ headerShown: false }} // Hide header for Home screen
+        options={{ headerShown: false }}
       />
+      <Stack.Screen name="EditProfile" component={EditProfile} />
     </Stack.Navigator>
   );
 }

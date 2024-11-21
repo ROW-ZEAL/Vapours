@@ -45,7 +45,7 @@ const RegistrationScreen = () => {
   };
 
   const validatePhone = (phone) => {
-    const phoneRegex = /^[0-9]{10}$/; // Adjust the regex as needed for your phone number format
+    const phoneRegex = /^[0-9]{10}$/;
     return phoneRegex.test(phone);
   };
 
@@ -121,7 +121,7 @@ const RegistrationScreen = () => {
         topOffset: 0,
         text1:
           Object.values(res.error.data.errors).flat()[0] ||
-          "Registration failed", // First error message or default message
+          "Registration failed",
       });
     }
   };
@@ -194,15 +194,14 @@ const RegistrationScreen = () => {
           <TextInput
             style={styles.input}
             value={phone_number}
-            onChangeText={
-              (text) => setPhone_number(text.replace(/[^0-9]/g, "")) // Allow only numbers
+            onChangeText={(text) =>
+              setPhone_number(text.replace(/[^0-9]/g, ""))
             }
             placeholder="Phone Number"
             keyboardType="numeric"
           />
         </View>
 
-        {/* Gender Input */}
         <View style={styles.inputWithLabel}>
           <Text style={styles.labelText}>Gender</Text>
           <TouchableOpacity
@@ -247,7 +246,6 @@ const RegistrationScreen = () => {
           )}
         </View>
 
-        {/* Terms and Conditions Checkbox */}
         <View
           style={{
             flex: 1,
@@ -266,7 +264,6 @@ const RegistrationScreen = () => {
           </Text>
         </View>
 
-        {/* Register Button */}
         <View style={styles.buttonContainer}>
           <Button title="Register" onPress={handleFormSubmit} color="#1F41BB" />
         </View>

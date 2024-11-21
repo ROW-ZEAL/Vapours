@@ -14,6 +14,8 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { Linking } from "react-native";
 import { useSelector } from "react-redux";
 import styles from "./ExploreStyles";
+import { v4 as uuidv4 } from "uuid";
+import "react-native-get-random-values";
 
 const Explore = () => {
   const route = useRoute();
@@ -28,6 +30,7 @@ const Explore = () => {
   const [show, setShow] = useState(false);
   const [selectedSlotIndex, setSelectedSlotIndex] = useState(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showFindOpponentModal, setShowFindOpponentModal] = useState(false);
 
   const user = useSelector((state) => state.user);
 
@@ -115,6 +118,34 @@ const Explore = () => {
       user_phone_number: user.phone_number,
     };
     navigation.navigate("Payonarrival", { bookingData });
+  };
+  const handleFindOpponent = () => {
+    if (selectedSlotIndex === null) {
+      Alert.alert("Error", "Please select a slot before finding an opponent.");
+      return;
+    }
+    setShowFindOpponentModal(true);
+  };
+
+  const handleFindNow = () => {
+    setShowFindOpponentModal(false);
+    const selectedSlot = slots[selectedSlotIndex];
+    const requestToken = uuidv4(); // Generate a unique request token
+
+    const findOpponentData = {
+      futsal_name: futsal.name,
+      selected_slot: selectedSlot.time,
+      booking_date: date.toISOString().split("T")[0],
+      address: futsal.address,
+      user_name: user.name,
+      user_email: user.email,
+      user_phone_number: user.phone_number,
+    };
+
+    navigation.navigate("RequestDetails", {
+      details: findOpponentData,
+      requestToken,
+    });
   };
 
   return (
@@ -212,8 +243,61 @@ const Explore = () => {
           <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
             <Text style={styles.submitButtonText}>Submit</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.submitButton, styles.findOpponentButton]}
+            onPress={handleFindOpponent}
+          >
+            <Text style={styles.submitButtonText}>Find Opponent</Text>
+          </TouchableOpacity>
         </View>
       </View>
+      <Modal
+        visible={showFindOpponentModal}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setShowFindOpponentModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalBox}>
+            <Text style={styles.modalTitle}>Find an Opponent</Text>
+            <View style={styles.modalDetails}>
+              <Text style={styles.modalDetail}>
+                <Text style={styles.boldText}>Date: </Text>
+                {date.toLocaleDateString()}
+              </Text>
+              <Text style={styles.modalDetail}>
+                <Text style={styles.boldText}>Slot: </Text>
+                {slots[selectedSlotIndex]?.time}
+              </Text>
+              <Text style={styles.modalDetail}>
+                <Text style={styles.boldText}>Address: </Text>
+                {futsal.address}
+              </Text>
+              <Text style={styles.modalDetail}>
+                <Text style={styles.boldText}>User Name: </Text>
+                {user.name}
+              </Text>
+              <Text style={styles.modalDetail}>
+                <Text style={styles.boldText}>User Email: </Text>
+                {user.email}
+              </Text>
+              <Text style={styles.modalDetail}>
+                <Text style={styles.boldText}>User Phone: </Text>
+                {user.phone_number}
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={[
+                styles.submitButton,
+                { backgroundColor: "orange", marginTop: 20 },
+              ]}
+              onPress={handleFindNow}
+            >
+              <Text style={styles.submitButtonText}>Request Now</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       <Modal
         visible={showPaymentModal}

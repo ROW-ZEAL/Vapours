@@ -1,4 +1,4 @@
-import json
+
 import psycopg2
 from GamePlanR.helper import execute_query_and_map_results
 from rest_framework.response import Response

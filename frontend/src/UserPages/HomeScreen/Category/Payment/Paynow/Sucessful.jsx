@@ -38,7 +38,6 @@ const PaymentSuccess = ({ route, navigation }) => {
     <View style={styles.container}>
       <Text style={styles.successText}>Payment Successful!</Text>
 
-      {/* Digital Receipt */}
       <View style={styles.receiptContainer}>
         <Text style={styles.receiptText}>Transaction ID: {transactionId}</Text>
         <Text style={styles.receiptText}>Amount: Rs. {amount}</Text>
@@ -46,12 +45,10 @@ const PaymentSuccess = ({ route, navigation }) => {
         <Text style={styles.receiptText}>Payment Method: {paymentMethod}</Text>
       </View>
 
-      {/* Download Button */}
       <TouchableOpacity style={styles.button} onPress={handleDownloadReceipt}>
         <Text style={styles.buttonText}>Download Receipt</Text>
       </TouchableOpacity>
 
-      {/* Go to Home Button */}
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigation.navigate("MainScreen")}

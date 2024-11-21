@@ -176,10 +176,26 @@ const styles = StyleSheet.create({
   payArrivalButton: {
     backgroundColor: "#FF9800", // Orange for Pay on Arrival
   },
+  findOpponentButton: {
+    backgroundColor: "orange", // Add a noticeable color
+    marginTop: 10,
+    padding: 10,
+    borderRadius: 5,
+  },
+  findNowButton: {
+    backgroundColor: "orange", // Bright orange for visibility
+    paddingVertical: 12, // Ensure sufficient height
+    paddingHorizontal: 20, // Add horizontal padding for width
+    borderRadius: 10, // Rounded corners
+    alignItems: "center",
+    justifyContent: "center", // Center the text within the button
+    minWidth: 100, // Set a minimum width for visibility
+  },
   modalButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: 16, // Make the text more prominent
+    color: "#fff", // Contrast against the background
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 
