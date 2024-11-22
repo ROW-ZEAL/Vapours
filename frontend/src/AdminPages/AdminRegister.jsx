@@ -127,18 +127,12 @@ const RegistrationScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f4f4f9", padding: 20 }}>
       <Toast config={toastConfig} />
-      <ScrollView keyboardShouldPersistTaps="handled">
-        <View style={{ alignItems: "center", marginBottom: 30 }}>
-          <Text
-            style={{
-              fontSize: 32,
-              fontWeight: "bold",
-              color: "#1F41BB",
-              marginTop: 10,
-            }}
-          >
+      <ScrollView contentContainerStyle={{ paddingBottom: 30 }}>
+        {/* Header Section */}
+        <View style={{ alignItems: "center", marginBottom: 20 }}>
+          <Text style={{ fontSize: 32, fontWeight: "bold", color: "#1F41BB" }}>
             Admin Register
           </Text>
           <Text style={{ fontSize: 16, color: "#6c757d", marginTop: 5 }}>
@@ -146,136 +140,210 @@ const RegistrationScreen = () => {
           </Text>
         </View>
 
-        <View>
-          <Text style={styles.labelText}>Name</Text>
-          <TextInput
-            style={styles.input}
-            value={name}
-            onChangeText={setName}
-            placeholder="Write Your Name"
-          />
-        </View>
-
-        <View>
-          <Text style={styles.labelText}>Email</Text>
-          <TextInput
-            style={styles.input}
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Write Your Email"
-            keyboardType="email-address"
-          />
-        </View>
-
-        <View style={styles.inputWithLabel}>
-          <Text style={styles.labelText}>Password</Text>
-          <TextInput
-            style={styles.input}
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Write Your Password"
-            secureTextEntry={true}
-          />
-        </View>
-
-        <View style={styles.inputWithLabel}>
-          <Text style={styles.labelText}>Confirm Password</Text>
-          <TextInput
-            style={styles.input}
-            value={password2}
-            onChangeText={setPassword2}
-            placeholder="Write Your Confirm Password"
-            secureTextEntry={true}
-          />
-        </View>
-
-        <View style={styles.inputWithLabel}>
-          <Text style={styles.labelText}>Phone Number</Text>
-          <TextInput
-            style={styles.input}
-            value={phone_number}
-            onChangeText={(text) =>
-              setPhone_number(text.replace(/[^0-9]/g, ""))
-            }
-            placeholder="Phone Number"
-            keyboardType="numeric"
-          />
-        </View>
-
-        <View style={styles.inputWithLabel}>
-          <Text style={styles.labelText}>Gender</Text>
-          <TouchableOpacity
-            style={{ flexDirection: "row", alignItems: "center" }}
-            onPress={() => setShowGenderDropdown(!showGenderDropdown)}
-          >
-            <TextInput
-              style={[styles.input, { flex: 1 }]}
-              value={gender}
-              placeholder="Select Gender"
-              editable={false}
-            />
-          </TouchableOpacity>
-
-          {showGenderDropdown && (
-            <View
-              style={{
-                borderWidth: 1,
-                borderColor: "gray",
-                borderRadius: 5,
-                maxHeight: 150,
-                overflow: "hidden",
-                position: "absolute",
-                backgroundColor: "white",
-                zIndex: 1,
-              }}
-            >
-              {["male", "female", "other"].map((option) => (
-                <TouchableOpacity
-                  key={option}
-                  onPress={() => {
-                    setGender(option);
-                    setShowGenderDropdown(false);
-                  }}
-                >
-                  <Text style={{ padding: 10 }}>
-                    {option.charAt(0).toUpperCase() + option.slice(1)}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
-        </View>
-
+        {/* Form Section */}
         <View
           style={{
-            flex: 1,
-            flexDirection: "row",
-            alignItems: "center",
-            marginBottom: 20,
+            backgroundColor: "#fff",
+            borderRadius: 15,
+            padding: 20,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 4,
+            elevation: 3,
           }}
         >
-          <Checkbox
-            value={tc}
-            onValueChange={setTc}
-            color={tc ? "#4630EB" : undefined}
-          />
-          <Text style={styles.labelText}>
-            I agree to the terms and conditions.
-          </Text>
+          {/* Name Input */}
+          <View style={{ marginBottom: 15 }}>
+            <Text style={{ fontWeight: "600", marginBottom: 5 }}>Name</Text>
+            <TextInput
+              style={{
+                borderWidth: 1,
+                borderColor: "#ddd",
+                borderRadius: 10,
+                paddingHorizontal: 15,
+                paddingVertical: 10,
+                backgroundColor: "#f9f9f9",
+              }}
+              value={name}
+              onChangeText={setName}
+              placeholder="Write Your Name"
+            />
+          </View>
+
+          {/* Email Input */}
+          <View style={{ marginBottom: 15 }}>
+            <Text style={{ fontWeight: "600", marginBottom: 5 }}>Email</Text>
+            <TextInput
+              style={{
+                borderWidth: 1,
+                borderColor: "#ddd",
+                borderRadius: 10,
+                paddingHorizontal: 15,
+                paddingVertical: 10,
+                backgroundColor: "#f9f9f9",
+              }}
+              value={email}
+              onChangeText={setEmail}
+              placeholder="Write Your Email"
+              keyboardType="email-address"
+            />
+          </View>
+
+          {/* Password Input */}
+          <View style={{ marginBottom: 15 }}>
+            <Text style={{ fontWeight: "600", marginBottom: 5 }}>Password</Text>
+            <TextInput
+              style={{
+                borderWidth: 1,
+                borderColor: "#ddd",
+                borderRadius: 10,
+                paddingHorizontal: 15,
+                paddingVertical: 10,
+                backgroundColor: "#f9f9f9",
+              }}
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Write Your Password"
+              secureTextEntry={true}
+            />
+          </View>
+
+          {/* Confirm Password */}
+          <View style={{ marginBottom: 15 }}>
+            <Text style={{ fontWeight: "600", marginBottom: 5 }}>
+              Confirm Password
+            </Text>
+            <TextInput
+              style={{
+                borderWidth: 1,
+                borderColor: "#ddd",
+                borderRadius: 10,
+                paddingHorizontal: 15,
+                paddingVertical: 10,
+                backgroundColor: "#f9f9f9",
+              }}
+              value={password2}
+              onChangeText={setPassword2}
+              placeholder="Write Your Confirm Password"
+              secureTextEntry={true}
+            />
+          </View>
+
+          {/* Phone Number */}
+          <View style={{ marginBottom: 15 }}>
+            <Text style={{ fontWeight: "600", marginBottom: 5 }}>
+              Phone Number
+            </Text>
+            <TextInput
+              style={{
+                borderWidth: 1,
+                borderColor: "#ddd",
+                borderRadius: 10,
+                paddingHorizontal: 15,
+                paddingVertical: 10,
+                backgroundColor: "#f9f9f9",
+              }}
+              value={phone_number}
+              onChangeText={(text) =>
+                setPhone_number(text.replace(/[^0-9]/g, ""))
+              }
+              placeholder="Phone Number"
+              keyboardType="numeric"
+            />
+          </View>
+
+          {/* Gender Dropdown */}
+          <View style={{ marginBottom: 20 }}>
+            <Text style={{ fontWeight: "600", marginBottom: 5 }}>Gender</Text>
+            <TouchableOpacity
+              style={{
+                borderWidth: 1,
+                borderColor: "#ddd",
+                borderRadius: 10,
+                paddingHorizontal: 15,
+                paddingVertical: 10,
+                backgroundColor: "#f9f9f9",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+              onPress={() => setShowGenderDropdown(!showGenderDropdown)}
+            >
+              <Text style={{ flex: 1, color: gender ? "#000" : "#6c757d" }}>
+                {gender || "Select Gender"}
+              </Text>
+            </TouchableOpacity>
+            {showGenderDropdown && (
+              <View
+                style={{
+                  borderWidth: 1,
+                  borderColor: "#ddd",
+                  borderRadius: 10,
+                  backgroundColor: "#fff",
+                  marginTop: 5,
+                }}
+              >
+                {["male", "female", "other"].map((option) => (
+                  <TouchableOpacity
+                    key={option}
+                    onPress={() => {
+                      setGender(option);
+                      setShowGenderDropdown(false);
+                    }}
+                    style={{ padding: 10 }}
+                  >
+                    <Text>
+                      {option.charAt(0).toUpperCase() + option.slice(1)}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+          </View>
+
+          {/* Checkbox */}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 20,
+            }}
+          >
+            <Checkbox
+              value={tc}
+              onValueChange={setTc}
+              color={tc ? "#1F41BB" : undefined}
+            />
+            <Text style={{ marginLeft: 10, color: "#6c757d" }}>
+              I agree to the terms and conditions.
+            </Text>
+          </View>
+
+          {/* Submit Button */}
+          <TouchableOpacity
+            onPress={handleFormSubmit}
+            style={{
+              backgroundColor: "#1F41BB",
+              paddingVertical: 15,
+              borderRadius: 10,
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ color: "#fff", fontWeight: "600", fontSize: 16 }}>
+              Register
+            </Text>
+          </TouchableOpacity>
         </View>
 
-        <View style={styles.buttonContainer}>
-          <Button title="Register" onPress={handleFormSubmit} color="#1F41BB" />
-        </View>
-
-        <View style={{ alignItems: "flex-end" }}>
+        {/* Already Registered */}
+        <View style={{ marginTop: 20, alignItems: "center" }}>
           <TouchableWithoutFeedback
             onPress={() => {
               navigation.navigate("AdminLogin");
             }}
           >
-            <Text style={{ fontWeight: "bold" }}>
-              Already Registered ? Login
+            <Text style={{ fontWeight: "bold", color: "#1F41BB" }}>
+              Already Registered? Login
             </Text>
           </TouchableWithoutFeedback>
         </View>

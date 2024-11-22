@@ -20,7 +20,7 @@ function HomeStackNavigator() {
         component={AdminDashboard}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="EditProfile" component={EditProfile} />
+      <Stack.Screen name="Editprofile" component={EditProfile} />
     </Stack.Navigator>
   );
 }

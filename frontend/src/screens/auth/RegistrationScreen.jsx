@@ -135,35 +135,30 @@ const RegistrationScreen = () => {
       <Toast config={toastConfig} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={{ alignItems: "center", marginBottom: 30 }}>
-          <Text
-            style={{
-              fontSize: 32,
-              fontWeight: "bold",
-              color: "#1F41BB",
-              marginTop: 10,
-            }}
-          >
+          <Text style={{ fontSize: 32, fontWeight: "bold", color: "#1F41BB" }}>
             Register Here
           </Text>
-          <Text style={{ fontSize: 16, color: "#6c757d", marginTop: 5 }}>
+          <Text style={{ fontSize: 16, color: "#6c757d" }}>
             Access your dashboard to plan your games!
           </Text>
         </View>
 
-        <View>
+        {/* Name Input */}
+        <View style={styles.inputGroup}>
           <Text style={styles.labelText}>Name</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, styles.inputBox]}
             value={name}
             onChangeText={setName}
             placeholder="Write Your Name"
           />
         </View>
 
-        <View>
+        {/* Email Input */}
+        <View style={styles.inputGroup}>
           <Text style={styles.labelText}>Email</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, styles.inputBox]}
             value={email}
             onChangeText={setEmail}
             placeholder="Write Your Email"
@@ -171,10 +166,11 @@ const RegistrationScreen = () => {
           />
         </View>
 
-        <View style={styles.inputWithLabel}>
+        {/* Password Input */}
+        <View style={styles.inputGroup}>
           <Text style={styles.labelText}>Password</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, styles.inputBox]}
             value={password}
             onChangeText={setPassword}
             placeholder="Write Your Password"
@@ -182,10 +178,11 @@ const RegistrationScreen = () => {
           />
         </View>
 
-        <View style={styles.inputWithLabel}>
+        {/* Confirm Password Input */}
+        <View style={styles.inputGroup}>
           <Text style={styles.labelText}>Confirm Password</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, styles.inputBox]}
             value={password2}
             onChangeText={setPassword2}
             placeholder="Write Your Confirm Password"
@@ -193,47 +190,31 @@ const RegistrationScreen = () => {
           />
         </View>
 
-        <View style={styles.inputWithLabel}>
+        {/* Phone Number Input */}
+        <View style={styles.inputGroup}>
           <Text style={styles.labelText}>Phone Number</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, styles.inputBox]}
             value={phone_number}
-            onChangeText={
-              (text) => setPhone_number(text.replace(/[^0-9]/g, "")) // Allow only numbers
+            onChangeText={(text) =>
+              setPhone_number(text.replace(/[^0-9]/g, ""))
             }
             placeholder="Phone Number"
             keyboardType="numeric"
           />
         </View>
 
-        {/* Gender Input */}
-        <View style={styles.inputWithLabel}>
+        {/* Gender Drop-Down */}
+        <View style={styles.inputGroup}>
           <Text style={styles.labelText}>Gender</Text>
           <TouchableOpacity
-            style={{ flexDirection: "row", alignItems: "center" }}
+            style={[styles.input, styles.dropdownButton]}
             onPress={() => setShowGenderDropdown(!showGenderDropdown)}
           >
-            <TextInput
-              style={[styles.input, { flex: 1 }]}
-              value={gender}
-              placeholder="Select Gender"
-              editable={false}
-            />
+            <Text>{gender || "Select Gender"}</Text>
           </TouchableOpacity>
-
           {showGenderDropdown && (
-            <View
-              style={{
-                borderWidth: 1,
-                borderColor: "gray",
-                borderRadius: 5,
-                maxHeight: 150,
-                overflow: "hidden",
-                position: "absolute",
-                backgroundColor: "white",
-                zIndex: 1,
-              }}
-            >
+            <View style={styles.dropdown}>
               {["male", "female", "other"].map((option) => (
                 <TouchableOpacity
                   key={option}
@@ -242,7 +223,7 @@ const RegistrationScreen = () => {
                     setShowGenderDropdown(false);
                   }}
                 >
-                  <Text style={{ padding: 10 }}>
+                  <Text style={styles.dropdownItem}>
                     {option.charAt(0).toUpperCase() + option.slice(1)}
                   </Text>
                 </TouchableOpacity>
@@ -251,34 +232,17 @@ const RegistrationScreen = () => {
           )}
         </View>
 
-        {/* Interested Categories */}
-        <View style={styles.inputWithLabel}>
+        {/* Interested Categories Drop-Down */}
+        <View style={styles.inputGroup}>
           <Text style={styles.labelText}>Interested Categories</Text>
           <TouchableOpacity
-            style={{ flexDirection: "row", alignItems: "center" }}
+            style={[styles.input, styles.dropdownButton]}
             onPress={() => setShowCategoryDropDown(!showCategoryDropDown)}
           >
-            <TextInput
-              style={[styles.input, { flex: 1 }]}
-              value={interested_categories} // Fix: changed from gender to interested_categories
-              placeholder="Select Categories"
-              editable={false}
-            />
+            <Text>{interested_categories || "Select Categories"}</Text>
           </TouchableOpacity>
-
           {showCategoryDropDown && (
-            <View
-              style={{
-                borderWidth: 1,
-                borderColor: "gray",
-                borderRadius: 5,
-                maxHeight: 150,
-                overflow: "hidden",
-                position: "absolute",
-                backgroundColor: "white",
-                zIndex: 1,
-              }}
-            >
+            <View style={styles.dropdown}>
               {["Futsal", "Basketball", "Cricket", "Badminton"].map(
                 (category) => (
                   <TouchableOpacity
@@ -288,7 +252,7 @@ const RegistrationScreen = () => {
                       setShowCategoryDropDown(false);
                     }}
                   >
-                    <Text style={{ padding: 10 }}>{category}</Text>
+                    <Text style={styles.dropdownItem}>{category}</Text>
                   </TouchableOpacity>
                 )
               )}
@@ -296,15 +260,8 @@ const RegistrationScreen = () => {
           )}
         </View>
 
-        {/* Terms and Conditions Checkbox */}
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            alignItems: "center",
-            marginBottom: 20,
-          }}
-        >
+        {/* Terms and Conditions */}
+        <View style={styles.checkboxContainer}>
           <Checkbox
             value={tc}
             onValueChange={setTc}
@@ -319,14 +276,13 @@ const RegistrationScreen = () => {
         <View style={styles.buttonContainer}>
           <Button title="Register" onPress={handleFormSubmit} color="#1F41BB" />
         </View>
+
         <View style={{ alignItems: "flex-end" }}>
           <TouchableWithoutFeedback
-            onPress={() => {
-              navigation.navigate("UserLogin");
-            }}
+            onPress={() => navigation.navigate("UserLogin")}
           >
             <Text style={{ fontWeight: "bold" }}>
-              Already Registered ? Login
+              Already Registered? Login
             </Text>
           </TouchableWithoutFeedback>
         </View>

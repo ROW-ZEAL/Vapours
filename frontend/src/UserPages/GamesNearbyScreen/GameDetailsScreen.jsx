@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -7,33 +7,43 @@ import {
   TouchableOpacity,
   Linking,
   Alert,
+  ScrollView,
 } from "react-native";
 import {
   MaterialIcons,
   MaterialCommunityIcons,
   FontAwesome,
 } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const GameDetailsScreen = ({ route }) => {
+  const navigation = useNavigation();
   const { game } = route.params;
 
-  const openMap = () => {
-    // Use only the location field for the search query
-    const searchQuery = game.location;
+  // Navigate back to HomeScreen after 5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Home" }],
+      });
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [navigation]);
 
-    // Construct Google Maps URL
+  const openMap = () => {
+    const searchQuery = game.location;
     const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
       searchQuery
     )}`;
 
-    // Open the URL
     Linking.openURL(url).catch(() => {
       Alert.alert("Error", "Unable to open maps. Please try again later.");
     });
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.category}>Category: {game.category}</Text>
       <Text style={styles.requestedBy}>Requested by: {game.name}</Text>
 
@@ -100,7 +110,7 @@ const GameDetailsScreen = ({ route }) => {
         <Text style={styles.contactText}>Contact Venue:</Text>
         <Text style={styles.contactNumber}>📞 984-8867781</Text>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

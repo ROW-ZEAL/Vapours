@@ -2,11 +2,9 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Image,
 } from "react-native";
 import React, { useState } from "react";
@@ -17,7 +15,7 @@ import { useLoginUserMutation } from "../services/userAuthApi";
 import { storeToken } from "../services/AsyncStorageService";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 
-const UserLoginScreen = () => {
+const AdminLoginScreen = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -50,9 +48,6 @@ const UserLoginScreen = () => {
           text1: "Access Denied",
           text2: "You are not an admin.",
         });
-
-        // Optionally, navigate to a different screen for non-admin users
-        // navigation.navigate("UserHome");
       }
 
       clearTextInput();
@@ -75,39 +70,57 @@ const UserLoginScreen = () => {
   };
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        padding: 20,
-        backgroundColor: "#f4f4f9",
-      }}
-    >
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <Toast config={toastConfig} />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: "center",
+          paddingHorizontal: 20,
+          paddingVertical: 30,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Logo Section */}
         <View style={{ alignItems: "center", marginBottom: 30 }}>
-          <View style={{ alignItems: "center", marginBottom: 30 }}>
-            <Image
-              source={require("../../assets/logo-design.png")}
-              style={styles.logo}
-            />
-            <Text style={{ fontSize: 16, color: "#6c757d", marginTop: 5 }}>
-              Access your dashboard to plan your games!
-            </Text>
-          </View>
+          <Image
+            source={require("../../assets/logo-design.png")}
+            style={{ width: 100, height: 100, resizeMode: "contain" }}
+          />
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: "bold",
+              color: "#1F41BB",
+              marginTop: 20,
+            }}
+          >
+            Admin Login
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              color: "#6c757d",
+              textAlign: "center",
+              marginTop: 10,
+            }}
+          >
+            Manage venues, bookings, and analytics efficiently.
+          </Text>
         </View>
 
-        <View style={styles.inputWithLabel}>
-          <Text style={[styles.labelText, { color: "#495057" }]}>Email</Text>
+        {/* Email Input */}
+        <View style={{ marginBottom: 20 }}>
+          <Text style={{ color: "#495057", marginBottom: 5 }}>Email</Text>
           <View
-            style={[
-              styles.input,
-              {
-                flexDirection: "row",
-                alignItems: "center",
-                backgroundColor: "#f8f9fa",
-              },
-            ]}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "#f8f9fa",
+              borderRadius: 8,
+              paddingHorizontal: 10,
+              paddingVertical: 12,
+            }}
           >
             <MaterialIcon
               name="email"
@@ -126,17 +139,18 @@ const UserLoginScreen = () => {
           </View>
         </View>
 
-        <View style={[styles.inputWithLabel, { marginTop: 20 }]}>
-          <Text style={[styles.labelText, { color: "#495057" }]}>Password</Text>
+        {/* Password Input */}
+        <View style={{ marginBottom: 30 }}>
+          <Text style={{ color: "#495057", marginBottom: 5 }}>Password</Text>
           <View
-            style={[
-              styles.input,
-              {
-                flexDirection: "row",
-                alignItems: "center",
-                backgroundColor: "#f8f9fa",
-              },
-            ]}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "#f8f9fa",
+              borderRadius: 8,
+              paddingHorizontal: 10,
+              paddingVertical: 12,
+            }}
           >
             <MaterialIcon
               name="lock"
@@ -155,32 +169,44 @@ const UserLoginScreen = () => {
           </View>
         </View>
 
+        {/* Login Button */}
         <TouchableOpacity
           style={{
             backgroundColor: "#1F41BB",
             paddingVertical: 15,
-            borderRadius: 30,
-            marginTop: 30,
+            borderRadius: 8,
             alignItems: "center",
+            marginBottom: 20,
           }}
           onPress={handleFormSubmit}
         >
-          <Text style={{ color: "#fff", fontSize: 18, fontWeight: "600" }}>
+          <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
             Login
           </Text>
         </TouchableOpacity>
-        <View style={{ marginTop: 30, alignItems: "center" }}>
-          <TouchableWithoutFeedback
-            onPress={() => navigation.navigate("UserLogin")}
-          >
-            <Text style={{ color: "#495057", fontWeight: "bold" }}>
-              Are you an User? Login here
-            </Text>
-          </TouchableWithoutFeedback>
-        </View>
+
+        {/* Signup Link */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate("AdminRegister")}
+          style={{ alignItems: "center", marginBottom: 10 }}
+        >
+          <Text style={{ color: "#1F41BB", fontWeight: "600" }}>
+            Don’t have an account? Sign up here!
+          </Text>
+        </TouchableOpacity>
+
+        {/* User Login Link */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate("UserLogin")}
+          style={{ alignItems: "center" }}
+        >
+          <Text style={{ color: "#6c757d", fontWeight: "600" }}>
+            Are you a user? Login here.
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-export default UserLoginScreen;
+export default AdminLoginScreen;

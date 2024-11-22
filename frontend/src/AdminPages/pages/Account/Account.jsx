@@ -76,7 +76,7 @@ const Accounts = () => {
         <Text style={styles.sectionTitle}>Account Actions</Text>
         <TouchableOpacity
           style={styles.actionItem}
-          onPress={() => navigation.navigate("EditProfile")}
+          onPress={() => navigation.navigate("Editprofile")}
         >
           <Icon name="create-outline" size={24} color="#007BFF" />
           <Text style={styles.actionText}>Edit Profile</Text>

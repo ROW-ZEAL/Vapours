@@ -56,135 +56,116 @@ const UserLoginScreen = () => {
   };
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        padding: 20,
-        backgroundColor: "#f4f4f9",
-      }}
-    >
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#F4F6F9" }}>
       <Toast config={toastConfig} />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{ alignItems: "center", marginBottom: 30 }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
+        <View style={{ alignItems: "center", marginTop: 50 }}>
           <Image
             source={require("../../../assets/logo-design.png")}
-            style={styles.logo}
+            style={{ width: 100, height: 100, marginBottom: 20 }}
           />
-          <Text style={{ fontSize: 16, color: "#6c757d", marginTop: 5 }}>
-            Access your dashboard to plan your games!
+          <Text style={{ fontSize: 24, fontWeight: "bold", color: "#1F41BB" }}>
+            Welcome Back!
+          </Text>
+          <Text style={{ fontSize: 14, color: "#6c757d", marginTop: 5 }}>
+            Access your account to plan your games
           </Text>
         </View>
 
-        {/* Email Input */}
-        <View style={styles.inputWithLabel}>
-          <Text style={[styles.labelText, { color: "#495057" }]}>Email</Text>
-          <View
-            style={[
-              styles.input,
-              {
-                flexDirection: "row",
-                alignItems: "center",
-                backgroundColor: "#f8f9fa",
-              },
-            ]}
+        <View style={{ marginHorizontal: 20, marginTop: 30 }}>
+          {/* Email Input */}
+          <Text
+            style={{ marginBottom: 10, color: "#495057", fontWeight: "500" }}
           >
-            <MaterialIcon
-              name="email"
-              size={20}
-              color="#6c757d"
-              style={{ marginRight: 10 }}
-            />
+            Email
+          </Text>
+          <View style={styles.inputField}>
+            <MaterialIcon name="email" size={20} color="#6c757d" />
             <TextInput
-              style={{ flex: 1, color: "#495057" }}
+              style={styles.textInput}
               value={email}
               onChangeText={setEmail}
-              placeholder="Enter Your Email"
+              placeholder="Enter your email"
               keyboardType="email-address"
               placeholderTextColor="#adb5bd"
             />
           </View>
-        </View>
 
-        {/* Password Input */}
-        <View style={[styles.inputWithLabel, { marginTop: 20 }]}>
-          <Text style={[styles.labelText, { color: "#495057" }]}>Password</Text>
-          <View
-            style={[
-              styles.input,
-              {
-                flexDirection: "row",
-                alignItems: "center",
-                backgroundColor: "#f8f9fa",
-              },
-            ]}
+          {/* Password Input */}
+          <Text
+            style={{
+              marginBottom: 10,
+              marginTop: 20,
+              color: "#495057",
+              fontWeight: "500",
+            }}
           >
-            <MaterialIcon
-              name="lock"
-              size={20}
-              color="#6c757d"
-              style={{ marginRight: 10 }}
-            />
+            Password
+          </Text>
+          <View style={styles.inputField}>
+            <MaterialIcon name="lock" size={20} color="#6c757d" />
             <TextInput
-              style={{ flex: 1, color: "#495057" }}
+              style={styles.textInput}
               value={password}
               onChangeText={setPassword}
-              placeholder="Enter Your Password"
+              placeholder="Enter your password"
               secureTextEntry={true}
               placeholderTextColor="#adb5bd"
             />
           </View>
-        </View>
 
-        {/* Forgot Password and Register Links */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginTop: 15,
-          }}
-        >
+          {/* Forgot Password */}
           <TouchableWithoutFeedback
             onPress={() => navigation.navigate("SendPasswordResetEmail")}
           >
-            <Text style={{ color: "#6c757d", fontWeight: "500" }}>
+            <Text
+              style={{
+                textAlign: "right",
+                marginTop: 10,
+                color: "#1F41BB",
+                fontWeight: "500",
+              }}
+            >
               Forgot Password?
             </Text>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback
-            onPress={() => navigation.navigate("Registration")}
-          >
-            <Text style={{ color: "#6c757d", fontWeight: "500" }}>
-              New User? Register
-            </Text>
-          </TouchableWithoutFeedback>
-        </View>
 
-        {/* Login Button */}
-        <TouchableOpacity
-          style={{
-            backgroundColor: "#1F41BB",
-            paddingVertical: 15,
-            borderRadius: 30,
-            marginTop: 30,
-            alignItems: "center",
-          }}
-          onPress={handleFormSubmit}
-        >
-          <Text style={{ color: "#fff", fontSize: 18, fontWeight: "600" }}>
-            Login
-          </Text>
-        </TouchableOpacity>
-
-        {/* Admin Registration Link */}
-        <View style={{ marginTop: 30, alignItems: "center" }}>
-          <TouchableWithoutFeedback
-            onPress={() => navigation.navigate("AdminLogin")}
+          {/* Login Button */}
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={handleFormSubmit}
           >
-            <Text style={{ color: "#495057", fontWeight: "bold" }}>
-              Are you an Admin? Login here
+            <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
+              Login
             </Text>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
+
+          {/* Register and Admin Login Links */}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: 20,
+            }}
+          >
+            <TouchableWithoutFeedback
+              onPress={() => navigation.navigate("Registration")}
+            >
+              <Text style={{ color: "#495057", fontWeight: "500" }}>
+                New User? Register
+              </Text>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPress={() => navigation.navigate("AdminLogin")}
+            >
+              <Text style={{ color: "#495057", fontWeight: "500" }}>
+                Are you an Admin? Login here
+              </Text>
+            </TouchableWithoutFeedback>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
