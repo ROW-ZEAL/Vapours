@@ -19,6 +19,7 @@ import Sucessful from "../../UserPages/HomeScreen/Category/Payment/Paynow/Sucess
 import EditProfile from "../../UserPages/AccountScreen/EditProfile/EditProfile";
 import RequestDetails from "../../UserPages/HomeScreen/Category/Explore/FindOpponent/RequestDetails";
 import GameDetailsScreen from "../../UserPages/GamesNearbyScreen/GameDetailsScreen";
+import ArenaBookingForm from "../../UserPages/HomeScreen/ArenaBookingForm/ArenaBookingForm";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -47,6 +48,7 @@ function HomeStackNavigator() {
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="RequestDetails" component={RequestDetails} />
       <Stack.Screen name="GameDetails" component={GameDetailsScreen} />
+      <Stack.Screen name="ArenaBookingForm" component={ArenaBookingForm} />
     </Stack.Navigator>
   );
 }

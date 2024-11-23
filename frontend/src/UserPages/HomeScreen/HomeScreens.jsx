@@ -64,7 +64,11 @@ const HomeScreen = () => {
         price="600 NRS /hr"
         rating="4.8"
         image="https://5.imimg.com/data5/SELLER/Default/2021/5/EY/RW/SB/3103550/futsal-court-construction-500x500.jpg"
-        onPress={() => console.log("Maitidevi Futsal Clicked!")}
+        onPress={() =>
+          navigation.navigate("ArenaBookingForm", {
+            arenaName: "Maitidevi Futsal",
+          })
+        }
       />
 
       <Text style={styles.sportCategoryTitle}>Sport Category</Text>
