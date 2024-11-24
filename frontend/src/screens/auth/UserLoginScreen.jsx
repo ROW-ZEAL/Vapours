@@ -56,7 +56,7 @@ const UserLoginScreen = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#F4F6F9" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <Toast config={toastConfig} />
       <ScrollView
         showsVerticalScrollIndicator={false}

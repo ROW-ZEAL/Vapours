@@ -49,15 +49,35 @@ def api_category_with_address(request, categoryName, address):
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-from sklearn.cluster import KMeans
-import pandas as pd
 import psycopg2
+import pandas as pd
+import numpy as np
+from sklearn.cluster import KMeans
+from geopy.geocoders import Nominatim
+from geopy.exc import GeocoderTimedOut
 
 class VenueRecommendationView(APIView):
-    def get(self, request, user_id):
+    def get_lat_long_from_location(self, location_name):
+        geolocator = Nominatim(user_agent="venue_recommender")
         try:
-            # Connect to the PostgreSQL database
+            location = geolocator.geocode(location_name, timeout=10)
+            if location:
+                return location.latitude, location.longitude
+            else:
+                return None, None
+        except GeocoderTimedOut:
+            return None, None
+
+    def recommend_venue_with_category(self, df, lat, long, interested_category, kmeans):
+        cluster = kmeans.predict(np.array([lat, long]).reshape(1, -1))[0]
+        recommended_venues = df[(df['cluster'] == cluster) & 
+                                (df['category'] == interested_category)].iloc[0:5][
+            ['venue_name', 'location', 'latitude', 'longitude', 'category']
+        ]
+        return recommended_venues
+
+    def get(self, request, location, category):
+        try:
             db_connection = psycopg2.connect(
                 host='localhost',
                 database="GamePlanR",
@@ -65,73 +85,48 @@ class VenueRecommendationView(APIView):
                 password="jayhind",
                 port="5432"
             )
-
             cursor = db_connection.cursor()
 
-            # Execute query to fetch data from 'locations' table
-            query_locations = "SELECT * FROM locations;"
-            cursor.execute(query_locations)
-            locations_data = cursor.fetchall()
-            locations_columns = [desc[0] for desc in cursor.description]
-            venue_df = pd.DataFrame(locations_data, columns=locations_columns)
+            venue_query = "SELECT * FROM venue_ratings;"
+            cursor.execute(venue_query)
+            venue_data = cursor.fetchall()
+            venue_columns = [desc[0] for desc in cursor.description]
+            venue_df = pd.DataFrame(venue_data, columns=venue_columns)
 
-            # Execute query to fetch data from 'venue_ratings' table
-            query_ratings = "SELECT * FROM venue_ratings;"
-            cursor.execute(query_ratings)
-            ratings_data = cursor.fetchall()
-            ratings_columns = [desc[0] for desc in cursor.description]
-            ratings_df = pd.DataFrame(ratings_data, columns=ratings_columns)
+            if 'latitude' in venue_df.columns and 'longitude' in venue_df.columns:
+                coords = venue_df[['latitude', 'longitude']]
 
-            # Merge locations and ratings data on 'venue_id'
-            venue_df = venue_df.merge(ratings_df[['venue_id', 'avg_rating']], on='venue_id', how='left')
+                kmeans = KMeans(n_clusters=5, init='k-means++', max_iter=300, n_init=10, random_state=0)
+                kmeans.fit(coords)
+                venue_df['cluster'] = kmeans.predict(coords)
 
-            # Clustering with KMeans
-            coords = venue_df[['latitude', 'longitude']]
-            kmeans = KMeans(n_clusters=5, init='k-means++', max_iter=300, n_init=10, random_state=0)
-            kmeans.fit(coords)
-            venue_df['cluster'] = kmeans.predict(coords)
+                top_venue = venue_df.sort_values(by='avg_rating', ascending=False)
 
-            # Execute query to fetch data from 'users' table
-            query_users = "SELECT * FROM users;"
-            cursor.execute(query_users)
-            users_data = cursor.fetchall()
-            users_columns = [desc[0] for desc in cursor.description]
-            user_df = pd.DataFrame(users_data, columns=users_columns)
+                lat, long = self.get_lat_long_from_location(location)
+                if lat is not None and long is not None:
+                    recommendations = self.recommend_venue_with_category(top_venue, lat, long, category, kmeans)
 
-            # Get the user data
-            user_data = user_df[user_df['user_id'] == int(user_id)].iloc[0]
-            lat = user_data['latitude']
-            long = user_data['longitude']
-            location = user_data['location']
-            interested_category = user_data['interested_category']
+                    recommendations_data = recommendations.to_dict(orient='records')
 
-            # Predict cluster for the user's location
-            user_location = pd.DataFrame({'latitude': [lat], 'longitude': [long]})
-            cluster = kmeans.predict(user_location)[0]
+                    response_data = {
+                        'User Location': location,
+                        'Interested Category': category,
+                        'Recommended Venues': recommendations_data
+                    }
 
-            # Filter by cluster and interested category
-            recommended_venues = venue_df[(venue_df['cluster'] == cluster) & (venue_df['category'] == interested_category)].iloc[0:5][
-                ['venue_name', 'location', 'latitude', 'longitude', 'category']]
+                    return Response(response_data)
 
-            # Manually format the response data as a list of dictionaries
-            recommended_venues_list = recommended_venues.to_dict(orient='records')
+                else:
+                    return Response({'error': 'Invalid location'}, status=400)
 
-            # Return the recommendations in JSON format
-            return Response({
-                'user_location': {
-                    'location': location,
-                    'latitude': lat,
-                    'longitude': long
-                },
-                'interested_category': interested_category,
-                'recommended_venues': recommended_venues_list
-            }, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Latitude and Longitude columns are missing in the data.'}, status=400)
 
         except Exception as e:
-            return Response({
-                'error': str(e)
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+            return Response({'error': str(e)}, status=500)
+
         finally:
-            if 'db_connection' in locals() and db_connection:
+            if 'cursor' in locals():
+                cursor.close()
+            if 'db_connection' in locals():
                 db_connection.close()

@@ -241,7 +241,7 @@ const Explore = () => {
           </View>
 
           <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.submitButtonText}>Submit</Text>
+            <Text style={styles.submitButtonText}>Book Now</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.submitButton, styles.findOpponentButton]}

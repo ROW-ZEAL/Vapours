@@ -41,14 +41,42 @@ function HomeStackNavigator() {
         component={CategoryPage}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="Explore" component={Explore} />
-      <Stack.Screen name="Paynow" component={PayNow} />
-      <Stack.Screen name="Payonarrival" component={PayOnarrival} />
-      <Stack.Screen name="Sucessful" component={Sucessful} />
-      <Stack.Screen name="EditProfile" component={EditProfile} />
-      <Stack.Screen name="RequestDetails" component={RequestDetails} />
-      <Stack.Screen name="GameDetails" component={GameDetailsScreen} />
-      <Stack.Screen name="ArenaBookingForm" component={ArenaBookingForm} />
+      <Stack.Screen
+        name="Explore"
+        component={Explore}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Paynow"
+        component={PayNow}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Payonarrival"
+        component={PayOnarrival}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Sucessful"
+        component={Sucessful}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="EditProfile"
+        component={EditProfile}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="RequestDetails"
+        component={RequestDetails}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="GameDetails"
+        component={GameDetailsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen name="Search For Nearest" component={ArenaBookingForm} />
     </Stack.Navigator>
   );
 }

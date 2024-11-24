@@ -5,9 +5,11 @@ import {
   ActivityIndicator,
   ScrollView,
   TouchableOpacity,
+  Animated,
 } from "react-native";
 import { useSelector } from "react-redux";
 import styles from "./HistoryScreenStyles";
+import * as Animatable from "react-native-animatable";
 
 export default function HistoryScreen() {
   const user = useSelector((state) => state.user);
@@ -43,38 +45,67 @@ export default function HistoryScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.welcomeText}>Loading!!!</Text>
-
-      {loading && <ActivityIndicator size="large" color="#FF6347" />}
+      {loading && (
+        <Animatable.View
+          animation="fadeIn"
+          duration={1500}
+          style={styles.loadingContainer}
+        >
+          <ActivityIndicator size="large" color="#4CAF50" />
+          <Text style={styles.loadingText}>
+            Loading your booking history...
+          </Text>
+        </Animatable.View>
+      )}
 
       {error && <Text style={styles.errorText}>{error}</Text>}
 
       {bookingHistory && (
         <ScrollView contentContainerStyle={styles.scrollView}>
           {bookingHistory.map((booking) => (
-            <View key={booking.id} style={styles.bookingContainer}>
+            <Animatable.View
+              key={booking.id}
+              style={styles.bookingContainer}
+              animation="fadeInUp"
+              duration={1000}
+              delay={500} // Add delay for smooth sequencing
+            >
               <Text style={styles.futsalName}>{booking.futsal_name}</Text>
               <Text style={styles.bookingText}>
-                Slot: {booking.selected_slot}
+                <Text style={styles.boldText}>Slot:</Text>{" "}
+                {booking.selected_slot}
               </Text>
               <Text style={styles.bookingText}>
-                Date: {booking.booking_date}
+                <Text style={styles.boldText}>Date:</Text>{" "}
+                {booking.booking_date}
               </Text>
               <Text style={styles.bookingText}>
-                Contact Person: {booking.contact_person}
+                <Text style={styles.boldText}>Contact Person:</Text>{" "}
+                {booking.contact_person}
               </Text>
               <Text style={styles.bookingText}>
-                Contact Number: {booking.contact_number}
-              </Text>
-              <Text style={styles.bookingText}>Address: {booking.address}</Text>
-              <Text style={styles.bookingText}>Token: {booking.token}</Text>
-              <Text style={styles.bookingText}>
-                User Email: {booking.user_email}
+                <Text style={styles.boldText}>Contact Number:</Text>{" "}
+                {booking.contact_number}
               </Text>
               <Text style={styles.bookingText}>
-                User Number: {booking.user_number}
+                <Text style={styles.boldText}>Address:</Text> {booking.address}
               </Text>
-            </View>
+              <Text style={styles.bookingText}>
+                <Text style={styles.boldText}>Token:</Text> {booking.token}
+              </Text>
+              <Text style={styles.bookingText}>
+                <Text style={styles.boldText}>User Email:</Text>{" "}
+                {booking.user_email}
+              </Text>
+              <Text style={styles.bookingText}>
+                <Text style={styles.boldText}>User Number:</Text>{" "}
+                {booking.user_number}
+              </Text>
+
+              <TouchableOpacity style={styles.detailsButton}>
+                <Text style={styles.detailsButtonText}>View Details</Text>
+              </TouchableOpacity>
+            </Animatable.View>
           ))}
         </ScrollView>
       )}
