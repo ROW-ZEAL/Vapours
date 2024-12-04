@@ -152,8 +152,8 @@ const GamesNearbyScreen = () => {
           setIsLoadingOverlayVisible(true); // Show the loading overlay
           setTimeout(() => {
             setIsLoadingOverlayVisible(false); // Hide the loading overlay
-            navigation.navigate("GameDetails", { game: item });
-          }, 2000); // Simulate delay
+            navigation.navigate("Details", { game: item });
+          }); // Simulate delay
         },
       },
     ]);

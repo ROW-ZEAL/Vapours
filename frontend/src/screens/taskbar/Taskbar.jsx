@@ -72,7 +72,7 @@ function HomeStackNavigator() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="GameDetails"
+        name="Details"
         component={GameDetailsScreen}
         options={{ headerShown: false }}
       />

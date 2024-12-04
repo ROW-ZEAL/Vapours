@@ -7,13 +7,14 @@ import {
   Alert,
   StyleSheet,
 } from "react-native";
-
+import { useSelector } from "react-redux";
 const generateTransactionId = () => {
   return `TXN${Math.floor(Math.random() * 1000000)}`;
 };
 
 const PayNow = ({ route, navigation }) => {
   const { bookingData } = route.params;
+  const user = useSelector((state) => state.user);
 
   const [mobileNumber, setMobileNumber] = useState("");
   const [khaltiPin, setKhaltiPin] = useState("");
@@ -47,8 +48,8 @@ const PayNow = ({ route, navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Payment Details</Text>
 
-      <Text style={styles.bookingDetails}>Name: {bookingData.user_name}</Text>
-      <Text style={styles.bookingDetails}>Email: {bookingData.user_email}</Text>
+      <Text style={styles.bookingDetails}>Name: {user.name}</Text>
+      <Text style={styles.bookingDetails}>Email: {user.email}</Text>
       <Text style={styles.bookingDetails}>Amount: Rs. 1000</Text>
 
       <TextInput

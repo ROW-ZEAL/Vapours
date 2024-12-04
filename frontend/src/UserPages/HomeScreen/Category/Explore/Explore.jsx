@@ -1,80 +1,121 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  ScrollView,
   Image,
   TouchableOpacity,
+  ScrollView,
+  Linking,
   Alert,
   Modal,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRoute, useNavigation } from "@react-navigation/native";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Linking } from "react-native";
-import { useSelector } from "react-redux";
-import styles from "./ExploreStyles";
-import { v4 as uuidv4 } from "uuid";
-import "react-native-get-random-values";
+import styles from "./ExplorePageStyles";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const Explore = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { futsal } = route.params || {};
-
-  if (!futsal) {
-    return <Text>Loading...</Text>;
-  }
+  const { futsal } = route.params;
 
   const [date, setDate] = useState(new Date());
-  const [show, setShow] = useState(false);
-  const [selectedSlotIndex, setSelectedSlotIndex] = useState(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [selectedSlot, setSelectedSlot] = useState(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showFindOpponentModal, setShowFindOpponentModal] = useState(false);
+  const [user, setUser] = useState(null);
 
-  const user = useSelector((state) => state.user);
+  const getUserInfo = async () => {
+    try {
+      const userName = await AsyncStorage.getItem("userName");
+      const userEmail = await AsyncStorage.getItem("userEmail");
+      const userPhoneNumber = await AsyncStorage.getItem("userPhoneNumber");
 
-  const onChange = (event, selectedDate) => {
-    if (event.type === "set") {
-      if (selectedDate < new Date()) {
-        Alert.alert("Invalid Date", "You cannot select a past date.");
-        return;
+      setUser({
+        name: userName,
+        email: userEmail,
+        phone_number: userPhoneNumber,
+      });
+    } catch (error) {
+      console.error("Error retrieving user info from AsyncStorage", error);
+    }
+  };
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
+
+  const toggleDatePicker = () => {
+    setShowDatePicker(!showDatePicker);
+  };
+
+  const handleDateChange = async (event, selectedDate) => {
+    setShowDatePicker(false);
+
+    if (selectedDate) {
+      const today = new Date();
+      const tomorrow = new Date();
+      tomorrow.setDate(today.getDate() + 1);
+
+      if (
+        selectedDate.toDateString() === today.toDateString() ||
+        selectedDate.toDateString() === tomorrow.toDateString()
+      ) {
+        setDate(selectedDate);
+        await sendDateToApi(selectedDate);
+      } else {
+        Alert.alert(
+          "Invalid Date",
+          "Please select today's or tomorrow's date."
+        );
       }
-      setDate(selectedDate || date);
     }
-    setShow(false);
   };
 
-  const showDatepicker = () => {
-    setShow(true);
-  };
+  const sendDateToApi = async (selectedDate) => {
+    const formattedDate = selectedDate.toISOString().split("T")[0];
+    const url = `http://10.0.2.2:8000/api/slots/${futsal.name}/${formattedDate}`;
 
-  const [slots, setSlots] = useState([
-    { time: "08:00AM - 09:00AM", available: true },
-    { time: "09:00AM - 10:00AM", available: false },
-    { time: "10:00AM - 11:00AM", available: true },
-    { time: "11:00AM - 12:00PM", available: true },
-    { time: "12:00PM - 01:00PM", available: false },
-    { time: "01:00PM - 02:00PM", available: true },
-  ]);
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-  const handleSlotSelection = (slot, index) => {
-    if (!slot.available) {
-      Alert.alert("Slot Already Booked", "Please choose another time.");
-      return;
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      if (data.Select_slots_results) {
+        setAvailableSlots(data.Select_slots_results);
+      } else {
+        Alert.alert(
+          "No slots available",
+          "There are no available slots for the selected date."
+        );
+      }
+    } catch (error) {
+      console.error("API fetch error:", error);
+      Alert.alert("Error", "Failed to fetch data from API");
     }
-    setSelectedSlotIndex(index);
   };
 
-  const openMap = () => {
-    const mapUrl = "https://www.google.com/maps";
-    Linking.openURL(mapUrl).catch((err) => {
-      Alert.alert("Error", "Unable to open Google Maps.");
-    });
+  const handleSlotClick = (slot) => {
+    if (slot.status === "available") {
+      setSelectedSlot(slot.slot_id === selectedSlot ? null : slot.slot_id);
+    } else {
+      Alert.alert("Slot Unavailable", "This slot is already reserved.");
+    }
   };
 
   const handleSubmit = () => {
-    if (selectedSlotIndex === null) {
+    if (selectedSlot === null) {
       Alert.alert("Error", "Please select a slot before submitting.");
       return;
     }
@@ -83,11 +124,12 @@ const Explore = () => {
 
   const handlePayNow = () => {
     setShowPaymentModal(false);
-    const selectedSlot = slots[selectedSlotIndex];
-
+    const selectedSlotObj = availableSlots.find(
+      (slot) => slot.slot_id === selectedSlot
+    );
     const bookingData = {
       futsal_name: futsal.name,
-      selected_slot: selectedSlot.time,
+      selected_slot: selectedSlotObj.booking_time_am_pm,
       booking_date: date.toISOString().split("T")[0],
       contact_person: futsal.contactPerson,
       contact_number: futsal.contact,
@@ -97,18 +139,19 @@ const Explore = () => {
       user_phone_number: user.phone_number,
     };
 
-    console.log("Booking Data:", bookingData);
+    console.log(bookingData);
 
     navigation.navigate("Paynow", { bookingData });
   };
 
   const handlePayOnArrival = () => {
     setShowPaymentModal(false);
-    const selectedSlot = slots[selectedSlotIndex];
-
+    const selectedSlotObj = availableSlots.find(
+      (slot) => slot.slot_id === selectedSlot
+    );
     const bookingData = {
       futsal_name: futsal.name,
-      selected_slot: selectedSlot.time,
+      selected_slot: selectedSlotObj.booking_time_am_pm,
       booking_date: date.toISOString().split("T")[0],
       contact_person: futsal.contactPerson,
       contact_number: futsal.contact,
@@ -119,8 +162,9 @@ const Explore = () => {
     };
     navigation.navigate("Payonarrival", { bookingData });
   };
+
   const handleFindOpponent = () => {
-    if (selectedSlotIndex === null) {
+    if (selectedSlot === null) {
       Alert.alert("Error", "Please select a slot before finding an opponent.");
       return;
     }
@@ -129,120 +173,110 @@ const Explore = () => {
 
   const handleFindNow = () => {
     setShowFindOpponentModal(false);
-    const selectedSlot = slots[selectedSlotIndex];
-    const requestToken = uuidv4(); // Generate a unique request token
-
+    const selectedSlotObj = availableSlots.find(
+      (slot) => slot.slot_id === selectedSlot
+    );
     const findOpponentData = {
       futsal_name: futsal.name,
-      selected_slot: selectedSlot.time,
+      selected_slot: selectedSlotObj.booking_time_am_pm,
       booking_date: date.toISOString().split("T")[0],
       address: futsal.address,
       user_name: user.name,
       user_email: user.email,
       user_phone_number: user.phone_number,
     };
-
-    navigation.navigate("RequestDetails", {
-      details: findOpponentData,
-      requestToken,
-    });
+    navigation.navigate("RequestDetails", { details: findOpponentData });
   };
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View style={styles.container}>
-        <Image source={{ uri: futsal.image }} style={styles.image} />
-        <View style={styles.contentContainer}>
-          <Text style={styles.title}>{futsal.name}</Text>
-          <View style={styles.ratingContainer}>
-            <Ionicons name="star" size={16} color="#FFD700" />
-            <Text style={styles.ratingText}>5.0</Text>
-            <Text style={styles.reviewCount}>(120 Reviews)</Text>
-          </View>
+        <Image
+          source={futsal.image ? { uri: futsal.image } : null}
+          style={styles.image}
+          resizeMode="cover"
+        />
+        <View style={styles.detailsContainer}>
+          <Text style={styles.name}>{futsal.name}</Text>
+          <Text style={styles.info}>Address: {futsal.address}</Text>
+          <Text style={styles.info}>Price: ₹{futsal.price}/hour</Text>
+          <Text style={styles.info}>Contact: {futsal.contact}</Text>
+          <Text style={styles.info}>
+            Contact Person: {futsal.contactPerson}
+          </Text>
+          <Text style={styles.info}>Availability: {futsal.availability}</Text>
+          <Text style={styles.info}>Working Hours: {futsal.hours}</Text>
+          <TouchableOpacity
+            style={styles.mapButton}
+            onPress={() => Linking.openURL(futsal.maps)}
+          >
+            <Icon name="map" style={styles.mapIcon} />
+            <Text style={styles.mapButtonText}>View on Maps</Text>
+          </TouchableOpacity>
 
-          <View style={styles.infoContainer}>
-            <View style={styles.row}>
-              <Ionicons name="location-outline" size={20} color="red" />
-              <Text style={styles.infoText}>{futsal.address}</Text>
-            </View>
-            <View style={styles.row}>
-              <Ionicons name="cash-outline" size={20} color="green" />
-              <Text style={styles.infoText}>{futsal.price}</Text>
-            </View>
-            <TouchableOpacity onPress={openMap}>
-              <View style={styles.mapsLinkContainer}>
-                <Ionicons name="map-outline" size={20} color="#f44336" />
-                <Text style={styles.mapsLinkText}>View On Maps</Text>
+          <TouchableOpacity style={styles.button} onPress={toggleDatePicker}>
+            <Text style={styles.buttonText}>
+              {date.toDateString() === new Date().toDateString()
+                ? "Select Date "
+                : "Select Date "}
+            </Text>
+          </TouchableOpacity>
+
+          {showDatePicker && (
+            <DateTimePicker
+              value={date}
+              mode="date"
+              display="default"
+              onChange={handleDateChange}
+              minimumDate={new Date()}
+              maximumDate={
+                new Date(new Date().setDate(new Date().getDate() + 1))
+              }
+            />
+          )}
+
+          <View style={styles.slotTableContainer}>
+            {availableSlots.length > 0 && (
+              <View style={styles.slotTable}>
+                <View style={styles.slotTableHeader}>
+                  <Text style={styles.slotTableHeaderText}>Slot Time</Text>
+                </View>
+                {availableSlots.map((slot) => (
+                  <View
+                    key={slot.slot_id}
+                    style={[
+                      styles.slotTableRow,
+                      {
+                        backgroundColor:
+                          slot.status === "available"
+                            ? selectedSlot === slot.slot_id
+                              ? "rgba(0, 0, 0, 0.1)"
+                              : "lightgreen"
+                            : "lightcoral",
+                      },
+                    ]}
+                  >
+                    <TouchableOpacity
+                      onPress={() => handleSlotClick(slot)}
+                      style={styles.slotRowContent}
+                    >
+                      <Text style={styles.slotTableText}>
+                        {slot.booking_time_am_pm}
+                      </Text>
+                      <Text style={styles.slotTableText}>
+                        {slot.status === "available" ? "Available" : "Reserved"}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                ))}
               </View>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Contact:</Text>
-            <View style={styles.row}>
-              <Ionicons name="call-outline" size={20} color="black" />
-              <Text style={styles.infoText}>{futsal.contact}</Text>
-            </View>
-            <View style={styles.row}>
-              <Ionicons name="person-outline" size={20} color="black" />
-              <Text style={styles.infoText}>{futsal.contactPerson}</Text>
-            </View>
-          </View>
-
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Pick a Date For Booking:</Text>
-            <TouchableOpacity onPress={showDatepicker}>
-              <View style={styles.dateInputContainer}>
-                <Text style={styles.dateInput}>
-                  {date.toLocaleDateString()}
-                </Text>
-                <Ionicons
-                  name="calendar-outline"
-                  size={24}
-                  color="black"
-                  style={styles.calendarIcon}
-                />
-              </View>
-            </TouchableOpacity>
-            {show && (
-              <DateTimePicker
-                value={date}
-                mode="date"
-                display="default"
-                onChange={onChange}
-                minimumDate={new Date()}
-              />
             )}
-          </View>
-
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Available slots</Text>
-            <View style={styles.slotsContainer}>
-              {slots.map((slot, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={[
-                    styles.slot,
-                    {
-                      backgroundColor:
-                        selectedSlotIndex === index
-                          ? "blue"
-                          : slot.available
-                          ? "green"
-                          : "red",
-                    },
-                  ]}
-                  onPress={() => handleSlotSelection(slot, index)}
-                >
-                  <Text style={styles.slotText}>{slot.time}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
           </View>
 
           <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
             <Text style={styles.submitButtonText}>Book Now</Text>
           </TouchableOpacity>
+
           <TouchableOpacity
             style={[styles.submitButton, styles.findOpponentButton]}
             onPress={handleFindOpponent}
@@ -251,104 +285,56 @@ const Explore = () => {
           </TouchableOpacity>
         </View>
       </View>
+
       <Modal
-        visible={showFindOpponentModal}
-        animationType="fade"
         transparent={true}
-        onRequestClose={() => setShowFindOpponentModal(false)}
+        visible={showPaymentModal}
+        animationType="slide"
+        onRequestClose={() => setShowPaymentModal(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalBox}>
-            <Text style={styles.modalTitle}>Find an Opponent</Text>
-            <View style={styles.modalDetails}>
-              <Text style={styles.modalDetail}>
-                <Text style={styles.boldText}>Date: </Text>
-                {date.toLocaleDateString()}
-              </Text>
-              <Text style={styles.modalDetail}>
-                <Text style={styles.boldText}>Slot: </Text>
-                {slots[selectedSlotIndex]?.time}
-              </Text>
-              <Text style={styles.modalDetail}>
-                <Text style={styles.boldText}>Address: </Text>
-                {futsal.address}
-              </Text>
-              <Text style={styles.modalDetail}>
-                <Text style={styles.boldText}>User Name: </Text>
-                {user.name}
-              </Text>
-              <Text style={styles.modalDetail}>
-                <Text style={styles.boldText}>User Email: </Text>
-                {user.email}
-              </Text>
-              <Text style={styles.modalDetail}>
-                <Text style={styles.boldText}>User Phone: </Text>
-                {user.phone_number}
-              </Text>
-            </View>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Payment Options</Text>
+            <TouchableOpacity onPress={handlePayNow} style={styles.modalButton}>
+              <Text style={styles.modalButtonText}>Pay Now</Text>
+            </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.submitButton,
-                { backgroundColor: "orange", marginTop: 20 },
-              ]}
-              onPress={handleFindNow}
+              onPress={handlePayOnArrival}
+              style={styles.modalButton}
             >
-              <Text style={styles.submitButtonText}>Request Now</Text>
+              <Text style={styles.modalButtonText}>Pay on Arrival</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setShowPaymentModal(false)}
+              style={styles.modalButton}
+            >
+              <Text style={styles.modalButtonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
       <Modal
-        visible={showPaymentModal}
-        animationType="fade"
         transparent={true}
-        onRequestClose={() => setShowPaymentModal(false)}
+        visible={showFindOpponentModal}
+        animationType="slide"
+        onRequestClose={() => setShowFindOpponentModal(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalBox}>
-            <Text style={styles.modalTitle}>{futsal.name}</Text>
-            <View style={styles.modalDetails}>
-              <Text style={styles.modalDetail}>
-                <Text style={styles.boldText}>Date: </Text>
-                {date.toLocaleDateString()}
-              </Text>
-              <Text style={styles.modalDetail}>
-                <Text style={styles.boldText}>Slot: </Text>
-                {slots[selectedSlotIndex]?.time}
-              </Text>
-              <Text style={styles.modalDetail}>
-                <Text style={styles.boldText}>Address: </Text>
-                {futsal.address}
-              </Text>
-              <Text style={styles.modalDetail}>
-                <Text style={styles.boldText}>User Name: </Text>
-                {user.name}
-              </Text>
-              <Text style={styles.modalDetail}>
-                <Text style={styles.boldText}>User Email: </Text>
-                {user.email}
-              </Text>
-              <Text style={styles.modalDetail}>
-                <Text style={styles.boldText}>User Phone: </Text>
-                {user.phone_number}
-              </Text>
-            </View>
-
-            <View style={styles.modalButtonContainer}>
-              <TouchableOpacity
-                style={[styles.modalButton, styles.payNowButton]}
-                onPress={handlePayNow}
-              >
-                <Text style={styles.modalButtonText}>Pay Now</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalButton, styles.payArrivalButton]}
-                onPress={handlePayOnArrival}
-              >
-                <Text style={styles.modalButtonText}>Pay on Arrival</Text>
-              </TouchableOpacity>
-            </View>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Find an Opponent</Text>
+            <TouchableOpacity
+              onPress={handleFindNow}
+              style={styles.modalButton}
+            >
+              <Text style={styles.modalButtonText}>Find Now</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setShowFindOpponentModal(false)}
+              style={styles.modalButton}
+            >
+              <Text style={styles.modalButtonText}>Cancel</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>

@@ -1,8 +1,10 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useSelector } from "react-redux";
 
 const RequestDetails = ({ route, navigation }) => {
   const { details, requestToken } = route.params;
+  const user = useSelector((state) => state.user);
 
   return (
     <View style={styles.container}>
@@ -20,10 +22,7 @@ const RequestDetails = ({ route, navigation }) => {
         <Text style={styles.bold}>Address:</Text> {details.address}
       </Text>
       <Text style={styles.detail}>
-        <Text style={styles.bold}>User Name:</Text> {details.user_name}
-      </Text>
-      <Text style={styles.detail}>
-        <Text style={styles.bold}>Request Token:</Text> {requestToken}
+        <Text style={styles.bold}>User Name:</Text> {user.name}
       </Text>
 
       <TouchableOpacity
