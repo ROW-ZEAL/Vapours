@@ -34,7 +34,7 @@ FROM
 JOIN 
     schedule_bookings sb
 ON 
-    v.id = sb.venue_id where venue_name = %s and booking_date =%s order by id;
+    v.id = sb.venue_id where sb.venue_name = %s and booking_date =%s order by id;
     """
     
     return list(execute_query_and_map_results(select_slots_query, (Games,date,)))

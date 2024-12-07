@@ -8,6 +8,7 @@ from .booking_history import api_booking_data,api_user_booking
 from .api_edit_profile import api_edit_user_profile
 from .api_ML import api_recommend
 from .api_venue_slots import api_user_select_slots
+from .api_reserved_slots import api_user_select_slots_reserved
 
 @api_view(['POST'])
 def api_venues(request):
@@ -40,6 +41,10 @@ def api_category(request, categoryName):
 def api_venue_slots_select(request, venue_name,date):
     return Response(api_user_select_slots(request=request, Games=venue_name,date=date))
 
+
+@api_view(['POST'])
+def api_venue_slots_select_reserved(request, futsal_name,booking_date,formattedSlot):
+    return Response(api_user_select_slots_reserved(request=request, Games=futsal_name,date=booking_date,slots=formattedSlot))
 @api_view(['GET'])
 def api_recommend_ml(request, user_id):
     return api_recommend(request, user_id)

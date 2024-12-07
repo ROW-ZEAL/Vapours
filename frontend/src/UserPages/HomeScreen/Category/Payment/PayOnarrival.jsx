@@ -42,6 +42,29 @@ const PayOnArrival = () => {
         user_email: user.email,
       };
 
+      const formattedSlot = bookingData.selected_slot
+        .split(",")
+        .map((slot) => {
+          // Parse slot as 12-hour time and convert to 24-hour time
+          const [time, meridian] = slot.trim().split(" ");
+          let [hours, minutes] = time.split(":").map(Number);
+
+          if (meridian === "PM" && hours !== 12) {
+            hours += 12;
+          } else if (meridian === "AM" && hours === 12) {
+            hours = 0;
+          }
+
+          return `${String(hours).padStart(2, "0")}:${String(
+            minutes || 0
+          ).padStart(2, "0")}:00/`;
+        })
+        .join("");
+
+      console.log("Futsal Name:", bookingData.futsal_name);
+      console.log("Slots:", formattedSlot);
+
+      // First API call to save booking data
       const response = await fetch("http://10.0.2.2:8000/api/booking", {
         method: "POST",
         headers: {
@@ -55,11 +78,36 @@ const PayOnArrival = () => {
       if (response.ok) {
         Alert.alert("Success", "Booking data has been successfully sent.");
 
-        // Reset the navigation stack and navigate to BookingHistory
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "BookingHistory" }],
+        // Second API call to send slot information
+        const apiUrl = `http://10.0.2.2:8000/api/reserved/${bookingData.futsal_name}/${bookingData.booking_date}/${formattedSlot}`;
+
+        const slotResponse = await fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: bookingToken,
+            user_phone: user.phone_number,
+          }),
         });
+
+        const slotResult = await slotResponse.json();
+
+        if (slotResponse.ok) {
+          Alert.alert(
+            "Success",
+            "Slot reservation data has been successfully sent."
+          );
+
+          // Reset the navigation stack and navigate to BookingHistory
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "BookingHistory" }],
+          });
+        } else {
+          Alert.alert("Error", slotResult.message || "Failed to reserve slot.");
+        }
       } else {
         Alert.alert("Error", result.message || "Something went wrong.");
       }

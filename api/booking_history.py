@@ -97,7 +97,7 @@ def api_user_booking(request, name):
     print('user name:', name)
 
     select_category_query = """
-          select * from booking_history WHERE user_name = %s ORDER BY id;
+          select * from booking_history WHERE user_name = %s ORDER BY id desc;
     """
     
     return list(execute_query_and_map_results(select_category_query, (name,)))

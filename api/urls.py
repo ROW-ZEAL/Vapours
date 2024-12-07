@@ -9,6 +9,7 @@ urlpatterns = [
     path('category/<str:categoryName>/', views.api_category, name='api'),
     # path('categor/<str:venue_name>/', views.api_slots, name='api'),
     path('slots/<str:venue_name>/<str:date>', views.api_venue_slots_select,name='api'),
+    path('reserved/<str:futsal_name>/<str:booking_date>/<str:formattedSlot>/', views.api_venue_slots_select_reserved,name='api'),
    path('category/<str:categoryName>/address/<str:address>/', views.api_category_with_address, name='api'),   
     path('booking', views.api_booking_history, name="api"),
     path('history/<str:name>/', views.api_user_booking_history, name="api"),
