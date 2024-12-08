@@ -238,12 +238,10 @@ const Explore = () => {
           <View style={styles.slotTableContainer}>
             {availableSlots.length > 0 && (
               <View style={styles.slotTable}>
-                <View style={styles.slotTableHeader}>
-                  <Text style={styles.slotTableHeaderText}>Slot Time</Text>
-                </View>
                 {availableSlots.map((slot) => (
-                  <View
+                  <TouchableOpacity
                     key={slot.slot_id}
+                    onPress={() => handleSlotClick(slot)}
                     style={[
                       styles.slotTableRow,
                       {
@@ -256,18 +254,15 @@ const Explore = () => {
                       },
                     ]}
                   >
-                    <TouchableOpacity
-                      onPress={() => handleSlotClick(slot)}
-                      style={styles.slotRowContent}
-                    >
+                    <View style={styles.slotRowContent}>
                       <Text style={styles.slotTableText}>
                         {slot.booking_time_am_pm}
                       </Text>
                       <Text style={styles.slotTableText}>
                         {slot.status === "available" ? "Available" : "Reserved"}
                       </Text>
-                    </TouchableOpacity>
-                  </View>
+                    </View>
+                  </TouchableOpacity>
                 ))}
               </View>
             )}
