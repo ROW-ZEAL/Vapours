@@ -100,3 +100,6 @@ def api_user_booking(request, name):
     """
     
     return list(execute_query_and_map_results(select_category_query, (name,)))
+
+
+

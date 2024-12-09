@@ -133,7 +133,7 @@ const RegistrationScreen = () => {
         {/* Header Section */}
         <View style={{ alignItems: "center", marginBottom: 20 }}>
           <Text style={{ fontSize: 32, fontWeight: "bold", color: "#1F41BB" }}>
-            Admin Register
+            Venue Admin Register
           </Text>
           <Text style={{ fontSize: 16, color: "#6c757d", marginTop: 5 }}>
             Access your dashboard to plan your games!

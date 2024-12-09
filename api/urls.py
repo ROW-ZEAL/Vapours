@@ -6,6 +6,9 @@ from .views import VenueRecommendationView
 
 urlpatterns = [
     path('venue', views.api_venues, name="api"),
+    path('vdetails/<str:name>', views.api_vdetails, name="api"),
+    path('slots', views.api_slots, name="api"),
+    # path('venues', views.api_vennues, name="api"),
     path('category/<str:categoryName>/', views.api_category, name='api'),
     # path('categor/<str:venue_name>/', views.api_slots, name='api'),
     path('slots/<str:venue_name>/<str:date>', views.api_venue_slots_select,name='api'),

@@ -33,7 +33,7 @@ const AccountTypeSelection = ({ navigation }) => {
           onPress={() => handleAccountTypeSelect("Admin")}
         >
           <MaterialIcons name="admin-panel-settings" size={70} color="#000" />
-          <Text style={styles.buttonText}>Admin</Text>
+          <Text style={styles.buttonText}> Venue Admin</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}

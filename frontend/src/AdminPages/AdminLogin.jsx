@@ -95,7 +95,7 @@ const AdminLoginScreen = () => {
               marginTop: 20,
             }}
           >
-            Admin Login
+            Venue Admin Login
           </Text>
           <Text
             style={{

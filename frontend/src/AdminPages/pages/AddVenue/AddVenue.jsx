@@ -14,6 +14,7 @@ import { RadioButton } from "react-native-paper";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import * as ImagePicker from "expo-image-picker";
 import { styles } from "./Venuecss";
+import { useSelector } from "react-redux";
 
 const AddVenue = () => {
   const [venueName, setVenueName] = useState("");
@@ -24,6 +25,7 @@ const AddVenue = () => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [photos, setPhotos] = useState([]);
+  const userData = useSelector((state) => state.user);
 
   const facilities = [
     { label: "Washroom", value: "washroom" },
@@ -87,6 +89,7 @@ const AddVenue = () => {
 
   const handleSubmit = async () => {
     const formData = new FormData();
+    formData.append("user_name", userData.name);
     formData.append("venueName", venueName);
     formData.append("category", category);
     formData.append("location", location);
@@ -148,6 +151,7 @@ const AddVenue = () => {
 
         {/* Basic Information Section */}
         <View style={styles.inputContainer}>
+          <Text style={styles.profileName}>{userData.name}</Text>
           <Text style={styles.label}>Basic Information</Text>
           <TextInput
             style={styles.input}
@@ -177,7 +181,7 @@ const AddVenue = () => {
 
         {/* Availability Section */}
         <View style={styles.availabilityContainer}>
-          <Text style={styles.label}>Availability</Text>
+          <Text style={styles.label}>Started From</Text>
           <View style={styles.dateTimeContainer}>
             <TouchableOpacity
               style={styles.dateTimeButton}

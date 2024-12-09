@@ -9,11 +9,20 @@ from .api_edit_profile import api_edit_user_profile
 from .api_ML import api_recommend
 from .api_venue_slots import api_user_select_slots
 from .api_reserved_slots import api_user_select_slots_reserved
+from .api_inser_slots import api_slots_insertion
+from .api_vdetails import get_vdetails
 
 @api_view(['POST'])
 def api_venues(request):
     data = request.data
     result = api_venue_details(data)
+    return Response(result)
+
+@api_view(['POST'])
+def api_slots(request):
+    data = request.data
+    result = api_slots_insertion(data)
+    
     return Response(result)
 @api_view(['POST'])
 def api_booking_history(request):
@@ -21,9 +30,17 @@ def api_booking_history(request):
     result = api_booking_data(data)
     return Response(result)
 
+
+
 @api_view(['GET'])
 def api_user_booking_history(request, name):
     return Response(api_user_booking(request=request,name=name, ))
+
+
+
+@api_view(['GET'])
+def api_vdetails(request, name):
+    return Response(get_vdetails(name=name))
 
 @api_view(['POST'])  
 def api_editing_profile(request, name,names, email, number):

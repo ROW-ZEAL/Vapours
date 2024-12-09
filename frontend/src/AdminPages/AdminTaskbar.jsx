@@ -7,6 +7,7 @@ import AddVenue from "./pages/AddVenue/AddVenue";
 import Notifications from "./pages/Account/Notification/Notifications";
 import Account from "./pages/Account/Account";
 import EditProfile from "./pages/Account/EditProfile/EditProfile";
+import Slots from "./pages/AddSlots/Slots";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -43,6 +44,8 @@ export default function AdminTaskbar() {
             iconName = focused ? "notifications" : "notifications-outline";
           } else if (route.name === "Account") {
             iconName = focused ? "person" : "person-outline";
+          } else if (route.name === "Slots") {
+            iconName = focused ? "calendar" : "calendar-outline"; // Icon for Add Slots
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -63,6 +66,11 @@ export default function AdminTaskbar() {
       />
       <Tab.Screen name="Notifications" component={Notifications} />
       <Tab.Screen name="Account" component={Account} />
+      <Tab.Screen
+        name="Slots"
+        component={Slots}
+        options={{ headerShown: false }}
+      />
     </Tab.Navigator>
   );
 }

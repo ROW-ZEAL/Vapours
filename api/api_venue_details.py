@@ -3,6 +3,7 @@ import psycopg2
 
 def api_venue_details(data):
     # Extracting data from the request
+    user_name=data.get('user_name')
     venue_name = data.get('venueName')
     category = data.get('category')
     location = data.get('location')
@@ -11,6 +12,7 @@ def api_venue_details(data):
     selected_date = data.get('selectedDate')
 
     # Printing the data to the console (for debugging purposes)
+    print('username:', user_name)
     print('Venue Name:', venue_name)
     print('Category:', category)
     print('Location:', location)
@@ -30,6 +32,12 @@ def api_venue_details(data):
 
         cursor = db_connection.cursor()
 
+        cursor.execute("""select * from "Account_user" au where name=%s""",(user_name,))
+        user_id = cursor.fetchone()[0]
+
+        print(user_id)
+    
+
         # Query to get the next available ID
         cursor.execute("SELECT COALESCE(MAX(id) + 1, 1) AS next_id FROM venue")
         next_id = cursor.fetchone()[0]
@@ -42,8 +50,9 @@ def api_venue_details(data):
                 address,
                 price,
                 selected_facility,
-                selected_date
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+                selected_date,
+                user_id
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s,%s)
         """
         
         # Execute the insert query with the data
@@ -54,7 +63,7 @@ def api_venue_details(data):
             location,
             price,
             json.dumps(selected_facility),  # Store selected_facility as JSON in the database
-            selected_date
+            selected_date,user_id
         ))
 
         # Commit the transaction
